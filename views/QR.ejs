@@ -1,0 +1,166 @@
+<%- include('partials/header.ejs')%>
+
+<link rel="stylesheet" href="./css/index.css">      
+</head>
+<body>
+
+<%-include('partials/navbar.ejs')%> 
+
+<div class="container">
+      <br>
+      <%if(user.Documentverified && user.Accountverified){%>
+      <h2 class="mFont">QR codes</h2>
+      
+      <form method="POST" action="/QR">
+            <input id="inpQr" name="qr" class="loginInput mFont" type="number" placeholder="Enter number of Tables">
+		<button type="submit" id="GenerateQR" class="btn mFont GenerateBtn"><i class="fa fa-qrcode"></i> Generate QR codes</button>
+		<%if(qrcodes.length > 0){%>
+		<button class="btn mFont GenerateBtn" style="margin: 10px;" onclick="printQRf()"><i class="fas fa-print"></i> Print</button>
+		<%}%>
+      </form>
+      
+      		
+      <%if(qrcodes.length > 0){%>
+		<div id="printQR" class="container">
+			<%for(var i = 0 ; i < qrcodes.length ; i++){%>
+				<br><br>
+				<div class="row">
+					<div class="col">
+						<% if(qrcodes[i]!=null){ %> 
+						<div class="Custcard">
+							
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="392" height="1059" viewBox="0 0 392 1059">
+								<defs>
+								  <filter id="TopRed" x="18.475" y="122.795" width="45.178" height="143.417" filterUnits="userSpaceOnUse">
+								    <feOffset dy="3" input="SourceAlpha"/>
+								    <feGaussianBlur stdDeviation="3" result="blur"/>
+								    <feFlood flood-opacity="0.161"/>
+								    <feComposite operator="in" in2="blur"/>
+								    <feComposite in="SourceGraphic"/>
+								  </filter>
+								  <filter id="Rectangle_22" x="331" y="331" width="43" height="143" filterUnits="userSpaceOnUse">
+								    <feOffset dy="3" input="SourceAlpha"/>
+								    <feGaussianBlur stdDeviation="3" result="blur-2"/>
+								    <feFlood flood-opacity="0.161"/>
+								    <feComposite operator="in" in2="blur-2"/>
+								    <feComposite in="SourceGraphic"/>
+								  </filter>
+								</defs>
+								<g id="Group_11" data-name="Group 11" transform="translate(-72 -75)">
+								  <g id="Steps" transform="translate(-15 39)">
+								    <g id="BelowQR" transform="translate(87 495)">
+								      <path id="Path_19" data-name="Path 19" d="M64,0H312a64,64,0,0,1,64,64V272a64,64,0,0,1-64,64H64A64,64,0,0,1,0,272V64A64,64,0,0,1,64,0Z" fill="none"/>
+								      <text id="Steps_1._Visit_guest.servemytable.com_2._Scan_this_QR_code_3._Place_Order_4._Make_Payment_" data-name="Steps 
+							      
+							      1.  Visit guest.servemytable.com
+							      
+							      2.  Scan this QR code
+							      
+							      3.  Place Order 
+							      
+							      4.  Make Payment
+							      " transform="translate(59 42)" stroke="#707070" stroke-width="1" font-size="22" font-family="NotoSans-Bold, Noto Sans" font-weight="700"><tspan x="0" y="0">Steps </tspan><tspan font-family="NotoSans, Noto Sans" font-weight="400"><tspan x="0" y="30"></tspan><tspan x="0" y="60" xml:space="preserve">1.  Visit guest.servemytable.com</tspan><tspan x="0" y="90"></tspan><tspan x="0" y="120" xml:space="preserve">2.  Scan this QR code</tspan><tspan x="0" y="150"></tspan><tspan x="0" y="180" xml:space="preserve">3.  Place Order </tspan><tspan x="0" y="210"></tspan><tspan x="0" y="240" xml:space="preserve">4.  Make Payment</tspan><tspan x="0" y="270"></tspan></tspan></text>
+								    </g>
+								    <text id="SERVE_MY_TABLE_TABLE_NO._1" data-name="SERVE MY TABLE
+							      TABLE NO. 1" transform="translate(275 64)" font-size="26" font-family="NotoSans-Bold, Noto Sans" font-weight="700"><tspan x="-105.289" y="0">SERVE MY TABLE</tspan><tspan x="-77.949" y="36">TABLE NO. <%=(i+1)%></tspan></text>
+								    <line id="Line_41" data-name="Line 41" y2="223" transform="translate(101.5 570.5)" fill="none" stroke="#ffd31d" stroke-width="5"/>
+								  </g>
+								  <g id="Payments" transform="translate(12 39)">
+								    <g id="Group_7" data-name="Group 7">
+								      <g id="Component_9_2" data-name="Component 9 â€“ 2" transform="translate(74 878)">
+									<circle id="Ellipse_11" data-name="Ellipse 11" cx="18.5" cy="18.5" r="18.5" fill="#d63434"/>
+									<line id="Line_18" data-name="Line 18" x2="6" y2="7" transform="translate(9.5 17.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+									<line id="Line_40" data-name="Line 40" x1="14" y2="12" transform="translate(15.5 12.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+								      </g>
+								      <rect id="Rectangle_48" data-name="Rectangle 48" width="271" height="37" rx="18.5" transform="translate(128 878)" fill="#ffd31d"/>
+								      <text id="Internet_Banking" data-name="Internet Banking" transform="translate(198 903)" font-size="17" font-family="NotoSans, Noto Sans"><tspan x="0" y="0">Internet Banking</tspan></text>
+								    </g>
+								    <g id="Group_8" data-name="Group 8" transform="translate(0 60)">
+								      <g id="Component_9_3" data-name="Component 9 â€“ 3" transform="translate(74 878)">
+									<circle id="Ellipse_11-2" data-name="Ellipse 11" cx="18.5" cy="18.5" r="18.5" fill="#d63434"/>
+									<line id="Line_18-2" data-name="Line 18" x2="6" y2="7" transform="translate(9.5 17.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+									<line id="Line_40-2" data-name="Line 40" x1="14" y2="12" transform="translate(15.5 12.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+								      </g>
+								      <rect id="Rectangle_48-2" data-name="Rectangle 48" width="271" height="37" rx="18.5" transform="translate(128 878)" fill="#ffd31d"/>
+								      <text id="Credit_and_Debit_Cards" data-name="Credit and Debit Cards" transform="translate(175 903)" font-size="17" font-family="NotoSans, Noto Sans"><tspan x="0" y="0">Credit and Debit Cards</tspan></text>
+								    </g>
+								    <g id="Group_9" data-name="Group 9" transform="translate(0 120)">
+								      <g id="Component_9_4" data-name="Component 9 â€“ 4" transform="translate(74 878)">
+									<circle id="Ellipse_11-3" data-name="Ellipse 11" cx="18.5" cy="18.5" r="18.5" fill="#d63434"/>
+									<line id="Line_18-3" data-name="Line 18" x2="6" y2="7" transform="translate(9.5 17.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+									<line id="Line_40-3" data-name="Line 40" x1="14" y2="12" transform="translate(15.5 12.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+								      </g>
+								      <rect id="Rectangle_48-3" data-name="Rectangle 48" width="271" height="37" rx="18.5" transform="translate(128 878)" fill="#ffd31d"/>
+								      <text id="UPI" transform="translate(250 903)" font-size="17" font-family="NotoSans, Noto Sans"><tspan x="0" y="0">UPI</tspan></text>
+								    </g>
+								    <g id="Group_10" data-name="Group 10" transform="translate(0 180)">
+								      <g id="Component_9_5" data-name="Component 9 â€“ 5" transform="translate(74 878)">
+									<circle id="Ellipse_11-4" data-name="Ellipse 11" cx="18.5" cy="18.5" r="18.5" fill="#d63434"/>
+									<line id="Line_18-4" data-name="Line 18" x2="6" y2="7" transform="translate(9.5 17.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+									<line id="Line_40-4" data-name="Line 40" x1="14" y2="12" transform="translate(15.5 12.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+								      </g>
+								      <rect id="Rectangle_48-4" data-name="Rectangle 48" width="271" height="37" rx="18.5" transform="translate(128 878)" fill="#ffd31d"/>
+								      <text id="Wallets" transform="translate(236 903)" font-size="17" font-family="NotoSans, Noto Sans"><tspan x="0" y="0">Wallets</tspan></text>
+								    </g>
+								  </g>
+								  <g id="QRCode" transform="translate(99 203.795)">
+								    <g id="allRectangles">
+								      <g id="TopYellow" transform="translate(0 0.205)" fill="#ffd31d" stroke="#ffd31d" stroke-linecap="round" stroke-width="1">
+									<rect width="125" height="25" rx="12.5" stroke="none"/>
+									<rect x="0.5" y="0.5" width="124" height="24" rx="12" fill="none"/>
+								      </g>
+								      <g id="BottomRed" transform="translate(213 308.205)" fill="#d63434" stroke="#d63434" stroke-linecap="round" stroke-width="1">
+									<rect width="125" height="25" rx="12.5" stroke="none"/>
+									<rect x="0.5" y="0.5" width="124" height="24" rx="12" fill="none"/>
+								      </g>
+								      <g transform="matrix(1, 0, 0, 1, -27, -128.8)" filter="url(#TopRed)">
+									<g id="TopRed-2" data-name="TopRed" transform="matrix(0.02, 1, -1, 0.02, 52.47, 128.8)" fill="#d63434" stroke="#d63434" stroke-linecap="round" stroke-width="1">
+									  <rect width="125" height="25" rx="12.5" stroke="none"/>
+									  <rect x="0.5" y="0.5" width="124" height="24" rx="12" fill="none"/>
+									</g>
+								      </g>
+								      <g transform="matrix(1, 0, 0, 1, -27, -128.8)" filter="url(#Rectangle_22)">
+									<g id="Rectangle_22-2" data-name="Rectangle 22" transform="translate(365 337) rotate(90)" fill="#ffd31d" stroke="#ffd31d" stroke-linecap="round" stroke-width="1">
+									  <rect width="125" height="25" rx="12.5" stroke="none"/>
+									  <rect x="0.5" y="0.5" width="124" height="24" rx="12" fill="none"/>
+									</g>
+								      </g>
+								    </g>
+								    <image id="QRCode-2" data-name="QRCode" width="232" height="232" transform="translate(50 50.205)" xlink:href="<%=qrcodes[i]%>"/>
+								  </g>
+								</g>
+							</svg>
+								      
+						</div>
+						<% } %> 
+
+					</div>
+				</div>
+			
+			<%}%>
+		</div> 
+      <%}%>
+      
+      <%}else{%>
+	<%-include('partials/AccountVerification.ejs')%> 
+
+	<%}%>
+
+		
+
+</div>
+
+<script>
+	function printQRf(){
+		var printContents = document.getElementById("printQR").innerHTML;
+		var originalContents = document.body.innerHTML;
+
+		document.body.innerHTML = printContents;
+
+		window.print();
+
+		document.body.innerHTML = originalContents;
+	}
+</script>
+
+<%-include('partials/footer.ejs')%> 

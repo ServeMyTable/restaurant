@@ -1,0 +1,49 @@
+body{
+        text-align: center;
+        background-image: url("../assets/bg.png");
+        background-size: 100%;
+        background-repeat: no-repeat;
+        
+}
+
+.SubscribeBtn{
+        color: white;
+}
+
+.cust{
+        text-align: center;
+}
+
+.custCard{
+
+        background-color: var(--theme-color);
+        width: fit-content;
+        padding: 50px 100px;
+        border-radius: 10px;
+        margin: auto;
+        margin-top: 20%;
+}
+
+@media (max-width: 700px) {
+
+        body{
+                background-image: url('../assets/bgmob.png');
+                text-align: left;
+                background-size: 100%;
+                background-repeat: no-repeat;
+        }
+        
+        .cust{
+                text-align: center;
+                margin-top: 30%;
+        }
+
+        .custCard{
+                padding: 2rem 4rem;
+        }
+
+        .heading{
+                font-size: medium;
+        }
+        
+}

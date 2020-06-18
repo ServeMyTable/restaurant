@@ -1,0 +1,49 @@
+<%- include('partials/header.ejs')%>
+<link rel="stylesheet" href="./css/index.css">
+      
+</head>
+<body>
+      <div class="LoginParent">
+            <div class="LoginChild">
+            
+            <h1 class="logoFont brand-name">Serve My Table</h1>
+
+            <form method="POST" action="/" class="LoginForm">
+
+                  <div>
+                        <%if(Message.status === 0){%>
+                              <button class="alert alert-danger mt-10 mb-10 mFont messageBox" role="alert"> <%=Message.msg%> </button>
+                        <%}%>
+                        <%if(Message.status === 1){%>
+                              <button class="alert alert-success mt-10 mb-10 mFont messageBox" role="alert"> <%=Message.msg%> </button>
+                        <%}%>
+                  </div>
+                  
+                  <div>
+                        <input name="email" class="loginInput mFont" type="email" placeholder="Email Address" required/>
+                  </div>
+                  <div>
+                        <input name="password" class="loginInput mFont" type="password" placeholder="Password" required/>
+                  </div>
+                  <div>
+                  <button type="submit" class="LoginBtn">Login</button>
+                  </div>
+            </form>
+            <form method="GET" action="/forgot">
+                  <div>
+                        <button class="forgotPassword mFont" type=submit>Forgot Password ?</button>
+                  </div>
+            </form>
+            
+            <form method="GET" action="/Register">
+                  <div>
+                        <button type="submit" class="forgotPassword mFont" >Don't have account? Register</button>
+                  </div>
+            </form>
+            </div>
+
+      </div>
+
+      <%- include('partials/footer.ejs')%>
+
+      

@@ -1,0 +1,63 @@
+<%- include('partials/header.ejs')%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="./css/Table.css">
+</head>
+<body>
+
+<%-include('partials/navbar.ejs')%> 
+<br>
+<div class="container">
+      <%if(user.Documentverified && user.Accountverified){%>
+      <h2 class="mFont">Table Management</h2>
+      <div style="display: none;" id="ResId"><%=id%></div>
+      <input type="text" id="SearchTable" onkeyup="filterItems()" placeholder="Search Table No" class="mFont searchBar"/>
+      <br><br>
+      <ul id="ListOfTables" class="grid-container">
+      <%for(var i = 0; i < table.length; i++){%>
+            <li class="grid-item">
+                  <a style="display: none;"><%=table[i].tableNo%></a>      
+                  <div class="card">
+                              <div class="card-header">
+                                    <h5 class="card-title mFont" name="DishName">Table No. <%=table[i].tableNo%></h5>
+                              </div>
+                              <div class="card-body">
+                                    <div class="container">
+                                                <div class="row">
+                                                      <div class="col">
+                                                            <p class="mFont">Dish Name</p>
+                                                      </div>
+                                                      <div class="col">
+                                                            <p class="mFont">Quantity</p>
+                                                      </div>
+                                                </div>
+                                                <%for(var k=0;k<table[i].Orders.length;k++){%>
+                                                      <div class="row">
+                                                            <div class="col">
+                                                                  <p class="mFont"><%=table[i].Orders[k].DishName%></p>
+                                                            </div>
+                                                            <div class="col">
+                                                                  <p class="mFont"><%=table[i].Orders[k].Quantity%></p>
+                                                            </div>
+                                                      </div>
+                                                <%}%>
+                                    </div>
+                                    <form method="POST" action="/OrderCompleted">
+                                          <input name="TableNo" value="<%=table[i].tableNo%>" style="display: none;">
+                                          <input name="RestaurantId" value="<%=id%>" style="display: none;">
+                                          <button class="btn btn-success"><i class="fa fa-tasks"></i> Order Completed</button>
+                                    </form>      
+                              </div>
+                  </div>
+
+            </li>
+      <%}%>
+      </ul>
+      <%}else{%>
+            <%-include('partials/AccountVerification.ejs')%>
+      <%}%>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="./scripts/table.js"></script>
+
+<%-include('partials/footer.ejs')%> 

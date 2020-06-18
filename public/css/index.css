@@ -1,0 +1,152 @@
+.LoginParent{
+      height: 100vh;
+      width: 100wh;
+}
+
+.LoginChild{
+      
+      padding: 50px 50px 20px 20px;
+      text-align: center;
+}
+
+.LoginForm{
+
+      margin-top: 10px;
+}
+
+.messageBox,
+.loginInput,
+.LoginBtn,
+.forgotPassword{
+      width: 30%;
+}
+
+.termsText{
+      margin-top: 20px;
+}
+
+.messageBox{
+      pointer-events: none;
+}
+
+.loginInput{
+
+      border: none;
+      border-bottom: 1px solid var(--theme-grey);
+      padding: 10px;
+      margin-top: 20px;
+      font-size: larger;
+}
+
+.loginInput:focus{
+      outline: none;
+      
+}
+
+.LoginBtn{
+
+      margin-top: 30px;
+      background-color: var(--theme-color);
+      color: black;
+      font-weight: 700;
+      padding: 10px;
+      font-size: larger;
+      text-align: center;
+}
+
+.LoginBtn:hover{
+
+      background-color: #ffd21dc2;
+}
+
+.forgotPassword{
+
+      text-align: center;
+      color: var(--theme-grey);
+      font-size: medium;
+      background-color: transparent;
+      margin-top: 30px;
+}
+
+.forgotPassword:hover{
+      text-decoration: underline;
+}
+
+
+
+/*css for QR.ejs*/
+.GenerateBtn{
+
+      background-color: var(--theme-color);
+      color: black;
+}
+.Custcard{
+      
+      margin: 10px;
+      text-align: center;
+}
+
+/* css for Dishes.ejs */
+
+.w-100{
+      width: 100%;
+}
+.grid-container {
+      display: grid;
+      grid-template-columns: auto auto auto;
+      padding: 10px;
+}
+.grid-item{
+      
+      padding: 2px;
+      margin: 2px;
+}
+
+.card-header{
+      background-color: var(--theme-color);
+      color: black;
+}
+
+.card{
+      border:none;
+}
+li{
+      list-style: none;
+}
+
+ul,li{
+      margin: 0;
+      padding: 0;
+}
+.customCheckbox,.ms,.sp,.s{
+      border : 1px solid var(--theme-color);
+      background-color: white;
+      padding: 10px;
+
+}
+.tags{
+      
+      border: 1px solid var(--theme-orange);
+      border-radius: 5px;
+      padding: 2px 5px;
+      color: var(--theme-orange);
+}
+
+/*Forgot Password*/
+
+
+/*Mobile View*/
+@media (max-width: 700px) {
+      
+      .messageBox,
+      .loginInput,
+      .LoginBtn,
+      .forgotPassword{
+            width: 100%;
+      }
+
+      .brand-name{
+            text-align: left;
+      }
+
+}

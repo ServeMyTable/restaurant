@@ -1,0 +1,203 @@
+<%- include('partials/header.ejs')%>
+
+<link rel="stylesheet" href="./css/history.css">      
+</head>
+<body>
+
+<%-include('partials/navbar.ejs')%> 
+<div class="container">
+        <br><br>
+        <%if(user.Documentverified && user.Accountverified){%>
+        <h2 class="mFont mt-10">Order History</h2>
+        <input type="text" id="SearchDish" onkeyup="filterItems()" placeholder="Search Orders Date" class="mFont searchBar"/>
+        <br><br>
+        <ul id="ListOfDishes" class="grid-container">
+        <%for(var i=0 ; i < Orders.length ; i++){%>        
+        <li class="grid-item">
+                <a style="display: none;"><%=Orders[i].OrderPlacedDate%></a>
+                <div class="card">
+                        <div class="card-header">
+                                Table No. <%=Orders[i].tableNo%>
+                                <br><small><%=Orders[i].OrderPlacedDate%><%=Orders[i].OrderPlacedTime%></small>
+                        </div>
+                        <div class="card-body">
+                                <%for(var k=0 ; k < Orders[i].Orders.length ; k++){%>
+                                        <div class="row">
+                                                <div class="col-8 mFont">
+                                                        <%=Orders[i].Orders[k].DishName%>
+                                                </div>
+                                                <div class="col-4 mFont">
+                                                        <%=Orders[i].Orders[k].Quantity%>
+                                                </div>
+                                        </div>
+                                <%}%>
+                        </div>
+                        <div class="card-footer">
+                                <div class="row">
+                                        <div class="col-8 mFont">
+                                                Total
+                                        </div>
+                                        <div class="col-4 mFont">
+                                                <strong><%=Orders[i].TotalBill%></strong>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                        <button class="btn yel-outline" data-toggle="modal" 
+                                        data-target="#Bill<%=i+1%>" onclick="printDiv()">Download Bill</button>
+                                </div>
+                        </div>
+                        <div class="modal fade" id = "Bill<%=i+1%>" tabindex="-1" 
+                        role="dialog" aria-hidden="true">
+                                
+                                <div class="modal-dialog" id="printBill" role="document">
+                                        
+                                        <div class="modal-content">
+                                                <div class="modal-body">
+                                                        <div class="mFont text-center">
+                                                                <%=user.RestaurantName %>
+                                                        </div>
+                                                        <div class="mFont text-center">
+                                                        <%=user.Location %>
+                                                        </div>
+                                        
+                                                        <div class="mFont text-center">
+                                                                GSTIN : <%=user.gstin %>
+                                                        </div>
+                                                        <div>
+                                                                <hr class="line-theme">
+                                                        </div>
+
+                                                        <div class="row">
+
+                                                                <a class="mFont" style="padding-left: 10px;">Table No. <%=Orders[i].tableNo%></a>
+                                                        
+                                                                <div class="ml-auto">
+                                                                      <a class="mFont" style="padding-right: 10px;">Date : <%=Orders[i].OrderPlacedDate%></a>
+                                                                </div>
+                                                        </div>
+                                                        <div>
+                                                                <hr class="line-theme">
+                                                                <br>
+                                                        </div>
+                                                        <div class="row  mt-30">
+                                                                <div class="col-6">
+                                                                      <a class="mFont">Particulars</a>
+                                                                </div>
+                                        
+                                                                <div class="col-2">
+                                                                      <a class="mFont">Rate</a>
+                                                                </div>
+                                        
+                                                                <div class="col-2">
+                                                                      <a class="mFont">Qty</a>
+                                                                </div>
+                                        
+                                                                <div class="col-2">
+                                                                      <a class="mFont">Amt</a>
+                                                                </div>
+                                                        </div>
+                                                        <div>
+                                                                <hr class="line-theme">
+                                                        </div>
+                                                        <%for(var l = 0 ; l < Orders[i].Orders.length ; l++){%>
+                                                                <div class="row">
+                                                                        <div class="col-6">
+                                                                                <%=Orders[i].Orders[l].DishName%>
+                                                                        </div>
+                                                                        <div class="col-2">
+                                                                                <%=Orders[i].Orders[l].Rate%>
+                                                                        </div>
+                                                                        <div class="col-2">
+                                                                                <%=Orders[i].Orders[l].Quantity%>
+                                                                        </div>
+                                                                        <div class="col-2">
+                                                                                <%=Orders[i].Orders[l].Quantity * Orders[i].Orders[l].Rate%>
+                                                                        </div>
+                                                                </div>
+                                                                
+                                                        <%}%>
+                                                        <div>
+                                                                <hr class="line-theme">
+                                                        </div>
+                                                        <div class="row">
+                                                                <div class="col-3 offset-7 mFont">
+                                                                      Sub Total
+                                                                </div>
+                                                                <div class="col-2 mFont" id="totalAmt">
+                                                                        <%=Orders[i].SubTotal%>
+                                                                </div>
+                                                        </div>
+                                                        <div class="row">
+
+                                                                <div class="col-2 offset-5 mFont">
+                                                                      CGST
+                                                                </div>
+                                                                <div class="col-2 mFont">
+                                                                      2.5%
+                                                                </div>
+                                                                <div class="col-2 offset-1 mFont" id="CGST">
+                                                                        <%= Math.round((Orders[i].SubTotal*0.025 + Number.EPSILON) * 100) / 100%>
+                                                                </div>
+                                                        </div>
+                                        
+                                                        <div class="row">
+                                        
+                                                                <div class="col-2 offset-5 mFont">
+                                                                      SGST
+                                                                </div>
+                                                                <div class="col-2 mFont">
+                                                                      2.5%
+                                                                </div>
+                                                                <div class="col-2 offset-1 mFont" id="SGST">
+                                                                        <%= Math.round((Orders[i].SubTotal*0.025 + Number.EPSILON) * 100) / 100%>
+                                                                </div>
+                                                        </div>
+                                                        <div class="row totalBox">
+                                                                <div class="mFont col-2 offset-7">
+                                                                      Total
+                                                                </div>
+                                                                <div class="mFont col-2 offset-1" id="TotalCalc">
+                                                                        <%= Orders[i].TotalBill %>
+                                                                </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                                <div class="col-md-4 col-sm-8">
+                                                                <a class="mFont Timestamp" name="Time">Time <%=Orders[i].OrderPlacedTime%></a>
+                                                                </div>
+                                                                <div class="col-md-4 offset-md-4 col-sm-4">
+                                                                <p class="mFont website">www.servemytable.in</p>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                                
+                                        </div>
+                                        
+                                </div>
+                        </div>
+                </div>
+        </li>
+        <%}%>
+        </ul>
+        <%}else{%>
+                <%-include('partials/AccountVerification.ejs')%> 
+        <%}%>
+</div>
+
+<script src="./scripts/OrderHis.js"></script>
+
+<script>
+
+
+function printDiv(){
+
+        const docToPrint = document.getElementById('printBill').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = docToPrint;
+        window.print();
+        document.body.innerHTML = originalContents;
+        
+}
+</script>
+
+<%-include('partials/footer.ejs')%> 

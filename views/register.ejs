@@ -1,0 +1,49 @@
+<%- include('partials/header.ejs') %>
+      <link rel="stylesheet" href="./css/index.css">
+      
+</head>
+<body>
+      <div class="LoginParent">
+            <div class="LoginChild">
+            
+                  <h1 class="logoFont brand-name">Serve My Table</h1>
+            
+                  <form class="LoginForm" method="POST" action="/Register">
+                        
+                        <div>
+                              <%if(Message.status === 0){%>
+                                    <button class="alert alert-danger mt-10 mb-10 mFont messageBox" role="alert"> <%=Message.msg%> </button>
+                              <%}%>
+                        </div>
+
+                        <div>
+                              <input class="loginInput mFont" name="username" type="username" placeholder="Username" required/>
+                        </div>
+                        <div>
+                              <input class="loginInput mFont" name="email" type="email" placeholder="Email Address" required/>
+                        </div>
+                        <div>
+                              <input class="loginInput mFont" name="password" type="password" placeholder="Password" required/>
+                        </div>
+                        <div>
+                              <input class="loginInput mFont" name="Cpassword" type="password" placeholder="Confirm Password" required/>
+                        </div>
+                        <div class="termsText">
+                              <input class="mFont" type="checkbox" required>
+                              <span class="mFont">By Checking this you accept all our<br><a href="www.servemytable.in/tnc">Terms and Conditions</a> and <a href="www.servemytable.in/privacy">Privacy Policies</a></span>
+                        </div>
+                        <div>
+                              <button type="submit" class="LoginBtn">Register</button>
+                        </div>
+                  </form>
+                  
+                  <form method="GET" action="/">
+                        <div>
+                              <button type="submit" class="forgotPassword mFont" >Already have an Account? Login</button>
+                        </div>
+                  </form>
+            
+            </div>
+      </div>
+
+<%-include('partials/footer.ejs')%> 

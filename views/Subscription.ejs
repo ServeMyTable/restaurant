@@ -1,0 +1,15 @@
+<%- include('partials/header.ejs')%>
+<link rel="stylesheet" href="./css/Subscribe.css">
+</head>
+<body>
+        
+        <div class="container cust">
+                <div class="custCard shadow">
+                        <h2 class="mFont heading">Welcome <%=user.username%>!</h2><br>
+                        <form action="/Subscription" method="POST">
+                                <button type="submit" class="SubscribeBtn mFont btn themeRedBtn">Subscribe Now</button>
+                        </form>
+                </div>
+        </div>
+
+<%- include('partials/footer.ejs')%>

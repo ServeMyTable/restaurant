@@ -1,0 +1,69 @@
+.navbar{
+
+      background-color: white;
+
+}
+
+.navbar-brand{
+      color: black;
+}
+
+.navbar-brand:hover{
+
+      color: var(--theme-orange);
+}
+
+.nav-link{
+      color: black;
+      padding-left: 10px;
+      padding-right: 10px;
+      display: block;
+      height: 100%;
+}
+
+.nav-item{
+      padding-bottom: 10px;
+}
+
+.navbar{
+      padding-bottom: 0;
+}
+
+.nav-link:hover{
+      color: var(--theme-orange);
+}
+.nav-item:hover{
+      border-bottom: 1px solid var(--theme-orange);
+}
+
+.logoutBtn{
+
+      color: black;
+      vertical-align: middle;
+      height: 100%;
+      padding-left: 10px;
+      padding-right: 10px;
+}
+
+.logoutForm{
+      margin: 0;
+      padding: 0;
+      height: 100%;
+}
+
+
+@media (max-width : 700px){
+
+      .logoutBtn{
+            color: var(--dark-red);
+            border: none;
+            padding-left: 0;
+      }
+      .logoutBtn:hover{
+            color: black;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--dark-red);
+      }
+
+}

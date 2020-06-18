@@ -1,0 +1,32 @@
+li{
+        list-style: none;
+}
+  
+ul,li{
+        margin: 0;
+        padding: 0;
+}
+  
+.grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        padding: 10px;
+}
+.grid-item{
+        
+        padding: 2px;
+        margin: 2px;
+}
+  
+.card-header{
+        background-color: var(--theme-color);
+        color: black;
+}
+  
+.card{
+        border:none;
+}
+
+.card-footer{
+        border-top: 1px solid var(--theme-color);
+}
