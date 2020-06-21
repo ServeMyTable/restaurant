@@ -51,6 +51,9 @@ const tableSchema = new Schema({
       },
       OrderPlacedDate : {
             type : String
+      },
+      CustomerName : {
+            type : String
       }
 },{
         timestamps:true

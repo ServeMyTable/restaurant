@@ -362,10 +362,10 @@ app.get('/QR',function(req,res){
                   const qrcodes = []
                   const num = req.user.nTables;
             
-                  for(var i = 0 ; i < num ; i++){
+                  for(var i = 0 ; i <= num ; i++){
                   
                         const RestID = req.user.Phone;
-                        const TableNo = (i+1).toString();
+                        const TableNo = (i).toString();
                         const urid = ('id='+RestID+'%26table='+TableNo).toString();
                         const data = 'https://guest.servemytable.in/restaurant?'+urid;
                         qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
@@ -405,19 +405,17 @@ app.get('/change',function(req,res){res.render('ChangePassword.ejs',{Message:req
 app.post('/QR',function(req,res){
       const qrcodes = []
       const num = req.body.qr;
-      
-      for(var i = 0 ; i < num ; i++){
-            
-            const RestID = req.user.Phone;
-            const TableNo = (i+1).toString();
-            const urid = ('id='+RestID+'%26table='+TableNo).toString();
-            //guest.servemytable.in
-            const data = 'https://guest.servemytable.in/restaurant?'+urid;
-            qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?amp;size=150x150&data='+data);
-            
-	}
-      
-      res.render('QR.ejs',{qrcodes:qrcodes,user:req.user});
+      if(num != req.user.nTables){
+            User.updateMany({_id : req.user._id},{$set : {nTables : num}},function(err){
+                  if(err){
+                        console.log(err);
+                  }else{
+                        res.redirect('/QR');
+                  }
+            })
+      }else{
+            res.redirect('/QR');
+      }
       
 });
 
