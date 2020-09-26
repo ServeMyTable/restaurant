@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require('mongoose');
-const session = require('express-session'); 
+const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
@@ -17,10 +17,14 @@ const OrderHistory = require('./models/history');
 const Multer = require('multer');
 const {Storage} = require('@google-cloud/storage');
 const uuid = require('uuid');
+
+const ifsc = require('ifsc');
+const MyRequest = require('request');
+
 const multer = Multer({
       storage: Multer.MemoryStorage,
       limits: {
-            fileSize: 5 * 1024 * 1024, 
+            fileSize: 5 * 1024 * 1024,
       },
 });
 
@@ -46,12 +50,12 @@ app.use(passport.session());
 
 mongoose.connect(process.env.MONGODB_URL,
       {
-            useNewUrlParser : true , 
+            useNewUrlParser : true ,
             useUnifiedTopology: true,
-            useCreateIndex : true 
+            useCreateIndex : true
       },function(MongoError){
             if(MongoError){
-                  console.log(MongoError);
+                  throw MongoError;
             }else{
                   console.log("MongoDB database connected successfully");
             }
@@ -64,7 +68,7 @@ const strategy = new LocalStrategy({
 
       User.findOne({ email: email }, (err, user) => {
             if (err) {
-                  console.log(err);
+                  return done("Some Error Occured.",false);
             }else
             if (!user) {
                   return done(null, false,{status : 041})
@@ -78,6 +82,8 @@ const strategy = new LocalStrategy({
                         }else{
                               return done(null, false,{status : 040})
                         }
+                  }else{
+                        return done("Some Error Occured.",false);
                   }
            });
       }
@@ -88,32 +94,29 @@ const strategy = new LocalStrategy({
 passport.use(strategy);
 
 passport.serializeUser((user, done) => {
-      
-      //console.log('Serializing User : '+user.email);
+
       done(null, user);
-      
+
 })
 
 passport.deserializeUser((user, done) => {
- 
-      //console.log('Deserializing user : '+user.email);
+
       done(null, user)
 })
 
 io.on('connection',function(socket){
-      //console.log('New Connection with socket.io');
       const changeStream = Table.watch();
       changeStream.on("change", function(change) {
 
             if(change.operationType ==='insert' || change.operationType === 'update'){
-                  
+
                   socket.emit('message',change.fullDocument);
 
             }
-            
+
       });
 });
-  
+
 //===========================AUTHENTICATION AND AUTHORIZATION================================
 
 app.post('/Register',function(req,res){
@@ -126,9 +129,9 @@ app.post('/Register',function(req,res){
                               username : req.body.username,
                               password : hash,
                               email    : req.body.email,
-                        
+
                         });
-      
+
                         newUser.save(function(err,result){
                               if(err){
                                     res.render("register.ejs",{Message : {msg : "Error occured Please try again!!!" , status : 0}});
@@ -138,19 +141,21 @@ app.post('/Register',function(req,res){
                                     });
                               }
                         })
+                  }else{
+                        res.render('Error.ejs',{error : "Error in securing password"});
                   }
             });
       }else{
             res.render("register.ejs",{Message : {msg : "Password and Confirm Password does not Match" , status : 0}});
       }
-    
+
 });
 
 app.post('/',function(req, res, next) {
 
       passport.authenticate('local', function(err, user, info) {
-            if (err) { 
-                  return next(err); 
+            if (err) {
+                  return res.render('Error.ejs',{error : err});
             }
             if(info.status === 040){
                   return res.render('index.ejs',{Message : {msg : "Invalid Password or Username" , status : 0}})
@@ -159,33 +164,12 @@ app.post('/',function(req, res, next) {
                   return res.render("register.ejs",{Message : {msg : "User does not Exists!!!" , status : 0}});
             }
             req.logIn(user, function(err) {
-                  if (err) { 
-                        return next(err); 
+                  if (err) {
+                        return res.render('Error.ejs',{error : "Some Error Occured."});
                   }
-                  /*
-                  if(req.user.Subscribed){
-                        const date = new Date(Date.now());
-                        const currentDate = date.setDate(new Date(date).getDate()).toString();
-                        const ExpiresDate = req.user.EndsOn;
-                        if(parseInt(currentDate) > parseInt(ExpiresDate)){
-                              User.updateOne({_id : req.user._id},{$set:{
-                                    Subscribed : false
-                              }},function(errors,raw){
-                                    if(!errors){
-                                          return res.render("Subscription.ejs",{user:req.user});
-                                    }
-                              });  
-                              
-                        }else{
-                              */
-                                    return res.redirect("/Profile");
-                       /* }
-                        
-                  }else{
-                        return res.render("Subscription.ejs",{user:req.user});;
-                  }
-                  */
-                  
+
+                  return res.redirect("/Profile");
+
             });
       })(req, res, next);
 
@@ -196,9 +180,9 @@ app.post("/Logout",function(req,res){
             req.logout();
             res.redirect("/");
       } else {
-            console.log("Err : Not able to log out");
+            res.render('Error.ejs',{error : "Error in logging out or You have already logged Out."});
       }
-    
+
 });
 
 app.post('/forgot',function(req,res){
@@ -207,7 +191,7 @@ app.post('/forgot',function(req,res){
                   res.render('ForgotPassword.ejs',{Message : {msg : "User Not Found Please Register",status : 0}});
             }else{
                   var transporter = nodemailer.createTransport({
-    
+
                         service: 'gmail',
                         auth: {
                           user: process.env.EMAIL,
@@ -216,7 +200,7 @@ app.post('/forgot',function(req,res){
                   });
                   var link = 'https://restaurant.servemytable.in/change?id='+doc._id;
                   //html: '<a href='+link+'><button>Change Password</button></a>'
-                  var HTML = 
+                  var HTML =
                   `<!doctype html>
                   <html>
                         <head>
@@ -235,7 +219,7 @@ app.post('/forgot',function(req,res){
                               }
 
                               .yelBtn:hover{
-                        
+
                                     background-color: #ffd21dc2;
                               }
                               .mFont{
@@ -250,7 +234,7 @@ app.post('/forgot',function(req,res){
                               body{
                                     padding : 10px;
                               }
-                              
+
                         </style>
                         <script async src="https://cdn.ampproject.org/v0.js"></script>
                         </head>
@@ -260,28 +244,28 @@ app.post('/forgot',function(req,res){
                               <p class="mFont">To Change Password click on button</p>
                               <a class="yelBtn mFont" href=${link}>Change Password</a>
                               <p class="mFont">Note : Don't Reply on this Mail.</p><br>
-                              <p class="mFont"><strong>Thanks and Regards</strong> <br> Saurabh and Chaitanya <br> ServeMyTable</p>	
+                              <p class="mFont"><strong>Thanks and Regards</strong> <br> Saurabh and Chaitanya <br> ServeMyTable</p>
                         </body>
                   </html>`
-                  
+
                   var mailOptions = {
                         from: 'servemytable@gmail.com',
                         to: doc.email,
                         subject: 'Change Password',
                         html: HTML
-                        
+
                   };
-                      
+
                 transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
                               res.render('ForgotPassword.ejs',{Message : {msg : "Sorry for Inconvenience Caused Please Try again Later",status : 0}});
-                                
+
                         } else {
-                                
+
                               res.render('ForgotPassword.ejs',{Message : {msg : "Check your Mail",status : 1}});
                         }
                 });
-        
+
             }
       });
 });
@@ -291,9 +275,9 @@ app.post('/forgot',function(req,res){
 app.get('/',function(req,res){
 
       if(req.isAuthenticated()){
-            
+
             res.redirect("/Profile")
-            
+
       }else{
             res.render('index.ejs',{Message : {status : 2 , msg : ""}});
       }
@@ -306,83 +290,67 @@ app.get('/forgot',function(req,res){ res.render('ForgotPassword.ejs',{Message : 
 app.get('/Profile',function(req,res){
 
       if(req.isAuthenticated()){
-            
+
             User.findById(req.user._id,function(err,doc){
                   req.logIn(doc,function(err1){
 
-                        if(err1){ console.log("Error : "+err1) }
+                        if(err1){ res.render('Error.ejs',{error : "Error in Logging in"});}
                         else{
-                              //if(req.user.Subscribed){
-                                    res.render("Profile.ejs",{user : req.user});
-                              //}else{
-                              //      res.render("Subscription.ejs",{user:req.user});
-                              //}
+                              res.render("Profile.ejs",{user : req.user});
                         }
 
                   });
             });
-            
+
       }else{
-            //console.log("User Not Found");
             res.render("index.ejs",{Message : {msg : 2 , status : 2}});
       }
 });
 
-app.get('/Dishes',function(req,res){ 
+app.get('/Dishes',function(req,res){
       if(req.isAuthenticated()){
             res.render("Dishes.ejs",{user : req.user});
       }else{
-            //console.log("User Not Found");
             res.render("index.ejs",{Message : {msg : 2 , status : 2}});
-      } 
+      }
 });
 
-app.get('/Table',function(req,res){ 
+app.get('/Table',function(req,res){
 
       if(req.isAuthenticated()){
             Table.find({RestaurantID : req.user.Phone},function(err,tables){
                   if(err){
-            
-                        console.log("Error");
+
                         res.render("Table.ejs",{table : [],id:"",user:req.user});
-            
+
                   }else{
                         res.render("Table.ejs",{table : tables,id:req.user.Phone,user:req.user});
                   }
             });
       }else{
-            //console.log("User Not Found");
             res.render("index.ejs",{Message : {msg : 2 , status : 2}});
       }
 });
 
 app.get('/QR',function(req,res){
-      if(req.isAuthenticated()){ 
-            if(req.user.nTables > 1){
-                  const qrcodes = []
-                  const num = req.user.nTables;
+      if(req.isAuthenticated()){
             
-                  for(var i = 0 ; i <= num ; i++){
-                  
-                        const RestID = req.user.Phone;
-                        const TableNo = (i).toString();
-                        const urid = ('id='+RestID+'%26table='+TableNo).toString();
-                        const data = 'https://guest.servemytable.in/restaurant?'+urid;
-                        qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
-                  }
-                  res.render("QR.ejs",{qrcodes:qrcodes,user:req.user}); 
-            }else{
-                  if(req.isAuthenticated()){
-                        res.render("QR.ejs",{qrcodes:[],user:req.user});
-                  }else{
-                        //console.log("User Not Found");
-                        res.render("index.ejs",{Message : {msg : 2 , status : 2}});
-                  }
-            }
+                const qrcodes = []
+                const num = req.user.nTables;
+                for(var i = 0 ; i <= num ; i++){
+
+                    const RestID = req.user.Phone;
+                    const TableNo = (i).toString();
+                    const urid = ('id='+RestID+'%26table='+TableNo).toString();
+                    const data = 'https://guest.servemytable.in/restaurant?'+urid;
+                    qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
+                }
+            res.render("QR.ejs",{qrcodes:qrcodes,user:req.user});
+            
       }else{
             res.render('index.ejs',{Message : {status : 2 , msg : 2}});
       }
-});   
+});
 
 app.get('/OrderHistory',function(req,res){
       if(req.isAuthenticated()){
@@ -400,70 +368,150 @@ app.get('/OrderHistory',function(req,res){
 
 app.get('/change',function(req,res){res.render('ChangePassword.ejs',{Message:req.param('id')});})
 
+app.get('/PlaceOrder',function(req,res){
+
+      if(req.isAuthenticated()){
+            res.render('PlaceOrder.ejs',{
+                  Restaurant : {
+                        dishes : req.user.Dishes,
+                        full : req.user
+                  },
+                  user:req.user
+            });
+      }else{
+            res.render('index.ejs',{Message : {status:2,msg:2}});
+      }
+});
+
 //=================================== POST REQUESTS ===================================
 
 app.post('/QR',function(req,res){
-      const qrcodes = []
+      
       const num = req.body.qr;
       if(num != req.user.nTables){
             User.updateMany({_id : req.user._id},{$set : {nTables : num}},function(err){
                   if(err){
-                        console.log(err);
-                  }else{
-                        res.redirect('/QR');
-                  }
+                        res.render('Error.ejs',{error : "Error in Updating Number of Tables"});
+                    }else{
+                        const qrcodes = []
+                        for(var i = 0 ; i <= num ; i++){
+                            const RestID = req.user.Phone;
+                            const TableNo = (i).toString();
+                            const urid = ('id='+RestID+'%26table='+TableNo).toString();
+                            const data = 'https://guest.servemytable.in/restaurant?'+urid;
+                            qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
+                        }
+                        res.render("QR.ejs",{qrcodes:qrcodes,user:req.user});
+                    }
             })
-      }else{
+        }else{
             res.redirect('/QR');
-      }
-      
+        }
+
 });
 
 app.post('/Account',function(req,res){
       const AccountName = req.body.AccountName;
       const AccountNumber = req.body.AccountNumber;
       const IFSCCode = req.body.IFSCcode;
-      const UPIID = req.body.UPIID;
+      const AccountType = req.body.AccountType;
 
-      User.updateMany({_id:req.user._id},{$set:{
-            AccountName : AccountName,
-            AccountNumber : AccountNumber,
-            IFSCcode : IFSCCode,
-            upiID : UPIID
-      }},function(err,raw){
-            if(err){
-                  console.log("Unable to update");
-            }else{
-                  console.log("Updated Details Successfully");
-                  res.redirect("/Profile");
+      const Email = req.body.Email;
+      const RestaurantName = req.body.RestaurantName;
+      const BussinessType = req.body.BussinessType;
+
+
+      if(ifsc.validate(IFSCCode)){
+
+        ifsc.fetchDetails(IFSCCode).then(function(result){
+
+          const OtherBankDetails = JSON.stringify(result);
+          const keyid = process.env.KEYID;
+          const sec = process.env.KEYSECRET;
+
+          var data = {
+            "name":AccountName,
+            "email":Email,
+            "tnc_accepted" : true,
+            "account_details":{
+                "business_name":RestaurantName,
+                "business_type":BussinessType,
+            },
+            "bank_account":{
+                "ifsc_code":IFSCCode,
+                "beneficiary_name":AccountName,
+                "account_type":AccountType,
+                "account_number":AccountNumber,
             }
+          };
+
+          var options = {
+            method : "POST",
+            url : "https://api.razorpay.com/v1/beta/accounts",
+            headers : {
+              "Authorization" : "Basic "+new Buffer.from(keyid+":"+sec).toString("base64"),
+              "Content-type": "application/json"
+            },
+            body : JSON.stringify(data),
+            };
+
+          MyRequest(options,function(error,response){
+            if(error){ console.log(error);
+            throw new Error(error); }else{
+
+              const resp = JSON.parse(response.body);
+
+              User.updateMany({_id:req.user._id},{
+                $set:{
+                  AccountName : AccountName,
+                  AccountNumber : AccountNumber,
+                  RazAccountId : resp.id,
+                  IFSCcode : IFSCCode,
+                  AccountType : AccountType,
+                  OtherBankDetails : OtherBankDetails
+               }},function(err,raw){
+                     if(err){
+                       res.render('Error.ejs',{error : "Error in updating Account Details"});
+                     }else{
+                        res.redirect("/Profile");
+                    }
+              });
+            }
+        });
+
       });
+
+      }else{
+        res.render('Error.ejs',{error : "Invalid IFSC code."});
+      }
 });
 
 app.post('/Restaurant',function(req,res){
-      
+
+
       const RestaurantName = req.body.RestaurantName;
       const Location = req.body.Location;
       const NumTables = req.body.NumTables;
       const Phone = req.body.Phone;
-      
+      const BussinessType = req.body.bType;
+
       User.updateMany({_id:req.user._id},{$set:{
             RestaurantName : RestaurantName,
             Location : Location,
             nTables : NumTables,
-            Phone:Phone
+            Phone:Phone,
+            BussinessType:BussinessType
             }},function(err,raw){
             if(err){
-                  console.log("Unable to update");
+                  res.render('Error.ejs',{error : "Error in Updating Restaurant Details"});
             }else{
-                  console.log("Updated Details Successfully");
                   res.redirect("/Profile");
             }
       });
 });
 
 app.post('/Dish',function(req,res){
-      
+
       const Dish = {
             DishName : req.body.DishName,
             Description : req.body.DishDes,
@@ -476,26 +524,25 @@ app.post('/Dish',function(req,res){
             {$push:{'Dishes' : Dish,'Categories' : Dish.Category}},
             function(err){
                   if(err){
-                        console.log('Error');
+                        res.render('Error.ejs',{error : "Error in Updating Dish"});
                   }else{
                         User.findById(req.user._id,function(err,doc){
                               req.logIn(doc,function(err1){
-      
-                                    if(err1){ console.log("Error : "+err1) }
+
+                                    if(err1){ res.render('Error.ejs',{error : "Some Error Occured."}); }
                                     else{
                                           res.render("Dishes.ejs",{user:req.user});
-                                          //console.log('Dish Added Successfully!!!');
                                     }
-      
+
                               });
                         });
                   }
             });
-            
+
 });
 
 app.post('/DeleteDish',function(req,res){
-      
+
       User.findByIdAndUpdate(req.user._id,{
             $pull : {
                   Dishes : {_id : req.body.DishID}
@@ -503,21 +550,20 @@ app.post('/DeleteDish',function(req,res){
       },
       function(error){
             if(error){
-                  console.log('Error : '+error);
+                  res.render('Error.ejs',{error : "Error in Deleting Dish"});
             }else{
-                  
+
                   User.findById(req.user._id,function(err,doc){
                         req.logIn(doc,function(err1){
 
-                              if(err1){ console.log("Error : "+err1) }
+                              if(err1){ res.render('Error.ejs',{error : "Some Error Occured."}); }
                               else{
                                     res.redirect("/Dishes");
-                                    //console.log('Dish Removed Successfully!!!');
                               }
 
                         });
                   });
-            }  
+            }
       });
 });
 
@@ -536,12 +582,12 @@ app.post('/UpdateDish',function(req,res){
             {$push:{'Dishes' : Dish,'Categories' : Dish.Category}},
             function(err){
                   if(err){
-                        console.log('Error');
+                        res.render('Error.ejs',{error : "Error in Updating Dish"});
                   }else{
                         User.findById(req.user._id,function(err,doc){
                               req.logIn(doc,function(err1){
-      
-                                    if(err1){ console.log("Error : "+err1) }
+
+                                    if(err1){ res.render('Error.ejs',{error : "Some Error in Occured."}); }
                                     else{
 
                                           User.findByIdAndUpdate(req.user._id,{
@@ -551,28 +597,28 @@ app.post('/UpdateDish',function(req,res){
                                           },
                                           function(error){
                                                 if(error){
-                                                      console.log('Error : '+error);
+                                                      res.render('Error.ejs',{error : "Error in Updating Details"});
                                                 }else{
-                                                      
+
                                                       User.findById(req.user._id,function(err,doc){
                                                             req.logIn(doc,function(err1){
-                                    
-                                                                  if(err1){ console.log("Error : "+err1) }
+
+                                                                  if(err1){ res.render('Error.ejs',{error : "Some Error Occured."}); }
                                                                   else{
                                                                         res.redirect("/Dishes");
                                                                   }
-                                    
+
                                                             });
                                                       });
-                                                }  
+                                                }
                                           });
                                     }
-      
+
                               });
                         });
                   }
             });
-            
+
 });
 
 app.post('/OrderCompleted',function(req,res){
@@ -586,18 +632,18 @@ app.post('/OrderCompleted',function(req,res){
                               Table.findByIdAndDelete({_id : doc._id},
                                     function(e){
                                     if(!e){
-                                          res.redirect('/Table');      
+                                          res.redirect('/Table');
                                     }else{
-                                          console.log(e);
+                                          res.render('Error.ejs',{error : "Server Error"});
                                     }
                               });
                         }else{
-                              console.log("Error while inserting :"+error);
+                              res.render('Error.ejs',{error : "Error in Updating Details"});
                         }
                   });
             }
             else{
-                  console.log("Error while finding : "+err);
+                  res.render('Error.ejs',{error : "User Not Found"});
             }
       });
 
@@ -614,8 +660,44 @@ app.post('/ChangePass',function(req,res){
                               res.render('index.ejs',{Message:{msg:"Password Changed Successfully!!",status:1}})
                         }
                   });
-            }      
+            }
       });
+});
+
+app.post('/PlaceOrder',function(req,res){
+
+      const Orders = [];
+      const result = req.body.Dish;
+
+      for(var i = 0 ; i < result.length ; i++){
+            Orders.push({
+                  DishName : result[i].Dish,
+                  Quantity :result[i].Quantity,
+                  Rate : result[i].Price
+            });
+      }
+
+      Table.updateMany({RestaurantID:req.user.Phone,tableNo : req.body.TableNo},
+            {
+            $set :{
+                  RestaurantID : req.user.Phone,
+                  tableNo : req.body.TableNo,
+                  Orders : Orders,
+                  TotalBill : req.body.TotalBill,
+                  SubTotal : req.body.SubTotal,
+                  CustomerName : req.body.CustomerName,
+                  PaymentMode : "Placed",
+                  PaymentStatus : true
+            }
+            },{ upsert:true }
+            ,function(error,raw){
+            if(!error){
+                  res.send("Done");
+            }else{
+                  res.render('Error.ejs',{error : "Some Error Occured."});
+            }
+      });
+
 });
 
 const storage = new Storage({
@@ -640,128 +722,60 @@ app.post('/UploadImage',multer.single('myFile'),
 
             stream.on('error', (err) => {
                   req.file.cloudStorageError = err;
-                  console.log("Unable to upload.");
-                  console.log(err)
+                  res.render('Error.ejs',{error : "Unable to Upload Document"});
             });
-        
+
             stream.on('finish', () => {
                   req.file.cloudStorageObject = gcsFileName;
-            
+
                   return file.makePublic()
                         .then(() => {
-                              
+
                               const Url = `https://storage.googleapis.com/${bucketName}/${gcsFileName}`;
                               req.file.gcsUrl = Url;
 
                               if(req.user.FileName){
                                     bucket.file(req.user.FileName).delete();
                               }
-                              
+
                               User.updateOne({_id : req.user._id},{$set : {ImageUrl : Url , FileName : gcsFileName}},
                                     function(err){
                                           if(err){
-                                                console.log(err);
+                                                res.render('Error.ejs',{error : "Error in Uploading"});
                                           }else{
                                                 res.redirect('/Profile');
                                           }
                               });
-                              
+
                   });
             });
-        
+
             stream.end(req.file.buffer);
 
-      
+
 });
 
-app.post('/UploadDocument',multer.any(),function(req,res){
-      
+app.post('/UploadDocument',function(req,res){
+
       const gstNum = req.body.gst;
       const panNum = req.body.pan;
 
       User.updateMany(
-            {_id:req.user._id},
+            { _id : req.user._id },
             {$set:{pan : panNum , gstin : gstNum}},
             function(err,raw){
                   if(err){
-                        console.log(err);
+                        res.render('Error.ejs',{error : "Error in Uploading."});
+                  }else{
+                        res.redirect("/Profile");
                   }
             });
-
-      const panFile = uuid.v1()+path.extname(req.files[0].originalname);
-      const file1 = bucket.file(panFile);
-      const stream1 = file1.createWriteStream({
-            metadata: {
-                  contentType: req.files[0].mimetype,
-            },
-      });
-      stream1.on('error', (err) => {
-            req.files[0].cloudStorageError = err;
-            console.log("Unable to upload PAN.");
-            console.log(err)
-      });
-      stream1.on('finish', () => {
-            req.files[0].cloudStorageObject = panFile;
-      
-            return file1.makePublic()
-                  .then(() => {
-                        
-                        const Url = `https://storage.googleapis.com/${bucketName}/${panFile}`;
-                        req.files[0].gcsUrl = Url;
-
-                        if(req.user.panFileName){
-                              bucket.file(req.user.panFileName).delete();
-                        }
-                        
-                        User.updateOne({_id : req.user._id},{$set : {panUrl : Url , panFileName : panFile}},
-                              function(err){
-                                    if(err){
-                                          console.log(err);
-                                    }
-                        });
-                        
-            });
-      });
-      stream1.end(req.files[0].buffer);
-
-      const gstFile = uuid.v1()+path.extname(req.files[1].originalname);
-      const file2 = bucket.file(gstFile);
-      const stream2 = file2.createWriteStream({
-            metadata: {
-                  contentType: req.files[1].mimetype,
-            },
-      });
-      stream2.on('error', (err) => {
-            req.files[1].cloudStorageError = err;
-            console.log("Unable to upload GST.");
-            console.log(err)
-      });
-      stream2.on('finish', () => {
-            req.files[1].cloudStorageObject = gstFile;
-                                          
-            return file2.makePublic()
-                  .then(() => {
-                        const Url = `https://storage.googleapis.com/${bucketName}/${gstFile}`;
-                        req.files[1].gcsUrl = Url;            
-                        if(req.user.gstFileName){
-                              bucket.file(req.user.gstFileName).delete();
-                        }
-                                                            
-                        User.updateOne({_id : req.user._id},{$set : {gstUrl : Url , gstFileName : gstFile}},
-                              function(err){
-                                    if(err){
-                                          console.log(err);
-                                          }else{
-                                                res.redirect('/Profile');
-                                          }
-                                    });
-                                                            
-                        });
-      });
-      stream2.end(req.files[1].buffer);
-
 });
 
+
+app.get('*',function(req,res){
+      res.render('404.ejs');
+});
 //=================================== LISTEN ON PORT ==================================
 
-server.listen(process.env.PORT || 3000,function(){ console.log('Server is up and Running on http://localhost:3000'); });
+server.listen(process.env.PORT || 5000,function(){ console.log('Server is up and Running on http://localhost:3000'); });

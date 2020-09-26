@@ -49,8 +49,17 @@ input:focus{
 .mt-10{
       margin-top: 10px;
 }
+.mt-30{
+      margin-top: 30px;
+}
 .mb-10{
       margin-bottom: 10px;
+}
+.mb-30{
+      margin-bottom: 30px;
+}
+.mb-0{
+      margin-bottom: 0;
 }
 
 .line-theme{
@@ -139,4 +148,8 @@ input:focus{
 @keyframes fadeout {
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
+}
+
+.fs-b{
+      font-weight: bold;
 }

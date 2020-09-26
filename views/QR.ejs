@@ -9,10 +9,10 @@
 <div class="container">
       <br>
       <%if(user.Documentverified && user.Accountverified){%>
-      <h2 class="mFont">QR codes</h2>
+      <h2 class="mFont fs-b">QR codes</h2>
       
       <form method="POST" action="/QR">
-            <input id="inpQr" name="qr" class="loginInput mFont" type="number" placeholder="Enter number of Tables">
+        <input id="inpQr" name="qr" class="loginInput mFont" type="number" placeholder="Enter number of Tables" min="1">
 		<button type="submit" id="GenerateQR" class="btn mFont GenerateBtn"><i class="fa fa-qrcode"></i> Generate QR codes</button>
 		<%if(qrcodes.length > 0){%>
 		<button class="btn mFont GenerateBtn" style="margin: 10px;" onclick="printQRf()"><i class="fas fa-print"></i> Print</button>
@@ -50,7 +50,7 @@
 								  <g id="Steps" transform="translate(-15 39)">
 								    <g id="BelowQR" transform="translate(87 495)">
 								      <path id="Path_19" data-name="Path 19" d="M64,0H312a64,64,0,0,1,64,64V272a64,64,0,0,1-64,64H64A64,64,0,0,1,0,272V64A64,64,0,0,1,64,0Z" fill="none"/>
-								      <text id="Steps_1._Visit_guest.servemytable.com_2._Scan_this_QR_code_3._Place_Order_4._Make_Payment_" data-name="Steps" transform="translate(59 42)" stroke="#707070" stroke-width="1" font-size="22" font-family="NotoSans-Bold, Noto Sans" font-weight="700"><tspan x="0" y="0">Steps </tspan><tspan font-family="NotoSans, Noto Sans" font-weight="400"><tspan x="0" y="30"></tspan><tspan x="0" y="60" xml:space="preserve">1.  Visit guest.servemytable.com</tspan><tspan x="0" y="90"></tspan><tspan x="0" y="120" xml:space="preserve">2.  Scan this QR code</tspan><tspan x="0" y="150"></tspan><tspan x="0" y="180" xml:space="preserve">3.  Place Order </tspan><tspan x="0" y="210"></tspan><tspan x="0" y="240" xml:space="preserve">4.  Make Payment</tspan><tspan x="0" y="270"></tspan></tspan></text>
+								      <text id="Steps_1._Visit_guest.servemytable.com_2._Scan_this_QR_code_3._Place_Order_4._Make_Payment_" data-name="Steps" transform="translate(59 42)" stroke="#707070" stroke-width="1" font-size="22" font-family="NotoSans-Bold, Noto Sans" font-weight="700"><tspan x="0" y="0">Steps </tspan><tspan font-family="NotoSans, Noto Sans" font-weight="400"><tspan x="0" y="30"></tspan><tspan x="0" y="60" xml:space="preserve">1.  Visit guest.servemytable.in</tspan><tspan x="0" y="90"></tspan><tspan x="0" y="120" xml:space="preserve">2.  Scan this QR code</tspan><tspan x="0" y="150"></tspan><tspan x="0" y="180" xml:space="preserve">3.  Place Order </tspan><tspan x="0" y="210"></tspan><tspan x="0" y="240" xml:space="preserve">4.  Make Payment</tspan><tspan x="0" y="270"></tspan></tspan></text>
 								    </g>
 								    <text id="SERVE_MY_TABLE_TABLE_NO._1" data-name="TABLENO" transform="translate(275 64)" font-size="26" font-family="NotoSans-Bold, Noto Sans" font-weight="700"><tspan x="-105.289" y="0">SERVE MY TABLE</tspan><tspan x="-77.949" y="36">TABLE NO. <%=(i)%></tspan><tspan x="-120" y="72">Phone : <%=(user.Phone)%></tspan></text>
 								    <line id="Line_41" data-name="Line 41" y2="223" transform="translate(101.5 570.5)" fill="none" stroke="#ffd31d" stroke-width="5"/>

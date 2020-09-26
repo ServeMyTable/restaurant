@@ -4,22 +4,28 @@
 </head>
 <body>
 
-<%-include('partials/navbar.ejs')%> 
+<%-include('partials/navbar.ejs')%>
 <br>
 <div class="container">
       <%if(user.Documentverified && user.Accountverified){%>
-      <h2 class="mFont">Table Management</h2>
+      <h2 class="mFont fs-b">Table Management</h2>
       <div style="display: none;" id="ResId"><%=id%></div>
       <input type="text" id="SearchTable" onkeyup="filterItems()" placeholder="Search Table No" class="mFont searchBar"/>
       <br><br>
       <ul id="ListOfTables" class="grid-container">
       <%for(var i = 0; i < table.length; i++){%>
+           <%if(table[i].PaymentStatus){%>
             <li class="grid-item">
-                  <a style="display: none;"><%=table[i].tableNo%></a>      
+                  <a style="display: none;"><%=table[i].tableNo%></a>
                   <div class="card">
                               <div class="card-header">
                                     <h5 class="card-title mFont" name="DishName">Table No. <%=table[i].tableNo%></h5>
-                                    <h6 class="mFont"><%=table[i].CustomerName%></h6>
+                                    <h6 class="mFont">
+                                      <%=table[i].CustomerName%>
+
+                                    </h6>
+                                    <h6 class="mFont tag"><%= table[i].PaymentMode %></h6>
+
                               </div>
                               <div class="card-body">
                                     <div class="container">
@@ -46,11 +52,12 @@
                                           <input name="TableNo" value="<%=table[i].tableNo%>" style="display: none;">
                                           <input name="RestaurantId" value="<%=id%>" style="display: none;">
                                           <button class="btn btn-success"><i class="fa fa-tasks"></i> Order Completed</button>
-                                    </form>      
+                                    </form>
                               </div>
                   </div>
 
             </li>
+            <%}%>
       <%}%>
       </ul>
       <%}else{%>
@@ -61,4 +68,4 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="./scripts/table.js"></script>
 
-<%-include('partials/footer.ejs')%> 
+<%-include('partials/footer.ejs')%>

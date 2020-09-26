@@ -8,8 +8,8 @@
 <%-include('partials/navbar.ejs')%>
 <br>
 <div class="container">
-      <h2 class="mFont">Profile</h2>
-</div> 
+      <h2 class="mFont fs-b">Profile</h2>
+</div>
 <!--Basic Details-->
 <br><br>
 <div class="container">
@@ -25,10 +25,10 @@
 <!--Professional Details-->
 <br>
 <div class="container">
-      
+
       <h4 class="mFont heading">Restaurant Details</h4>
       <br>
-      
+
             <%if(user.ImageUrl){%>
                   <img id="restImage" src=<%=user.ImageUrl%> width="300" height="300" alt="Logo">
             <%}else{%>
@@ -44,75 +44,95 @@
                                     <div class="container">
                                           <img id="imagePreview" width="100px" height="100px"><br>
                                           <br>
-                                          <form 
-                                          method="POST" 
-                                          action="/UploadImage" 
+                                          <form
+                                          method="POST"
+                                          action="/UploadImage"
                                           enctype="multipart/form-data">
-                                                <input 
-                                                      type="file" 
-                                                      accept="image/*" 
-                                                      id="imageInp" 
+                                                <input
+                                                      type="file"
+                                                      accept="image/*"
+                                                      id="imageInp"
                                                       onchange="preview()"
                                                       name="myFile"><br>
                                                 <br>
                                                 <button id="UploadImage" class="btn yelBtn">Upload Image</button>
                                           </form>
                                           <br>
-                                          <p id="Message" class="mFont"><i id="statImage"></i> Note : Please upload only Image File under 5 MB.</p>
-                                          
+                                          <p id="Message" class="mFont"><i id="statImage"></i> Note : Please upload Image File under 5 MB.</p>
+
                                     </div>
                               </div>
                         </div>
                   </div>
             </div>
-            
+
 
 
             <br>
             <br>
-            <label for="restID">Restaurant Phone Number</label>
+            <label for="restID">Restaurant Phone Number *</label>
             <p class="mFont" id="restID"><%= user.Phone %></p>
             <br>
-            <label for="restName">Restaurant Name</label>
+            <label for="restName">Restaurant Name *</label>
             <p class="mFont" id="restName"><%= user.RestaurantName %></p>
             <br>
-            <label for="location">Restaurant location</label>
+            <label for="BussinessType">Bussiness Type *</label>
+            <p class="mFont" id="BussinessType"><%= user.BussinessType %></p>
+            <br>
+            <label for="location">Restaurant location *</label>
             <p class="mFont" id="location"><%= user.Location %></p>
             <br>
-            <label for="tableno">Restaurant Number of tables</label>
+            <label for="tableno">Restaurant Number of tables *</label>
             <p class="mFont" id="tableno"><%= user.nTables %></p>
             <br>
 
-      <button class="mFont btn btn-danger" data-toggle="modal" 
+
+      <button class="mFont btn btn-danger" data-toggle="modal"
       data-target="#RestaurantDetails"><i class="fa fa-plus"></i> Add Details</button>
 
-      <div class="modal fade" id = "RestaurantDetails" tabindex="-1" 
+      <div class="modal fade" id = "RestaurantDetails" tabindex="-1"
             role="dialog" aria-hidden="true">
-            
+
             <div class="modal-dialog" role="document">
-                 
+
                   <div class="modal-content">
-                        
+
                         <div class="modal-header">
-                              
+
                               <h5 class="modal-title mFont">Restaurant Details</h5>
                               <button class="close" data-dismiss="modal">
                                     <span aria-hidden="true">&times;</span>
                               </button>
 
                         </div>
-                        
+
                         <div class="modal-body">
 
                               <form method="POST" action="/Restaurant">
-                                    
+
                                     <input class="customInput mFont" name="RestaurantName" placeholder="Name of Restaurant *" value="<%=user.RestaurantName%>" type="text" required><br>
                                     <input class="customInput mFont" name="Location" placeholder="Restaurant Location *" value="<%=user.Location%>" type="text" required><br>
                                     <input class="customInput mFont" name="NumTables" placeholder="Number of Tables *" value="<%=user.nTables%>" type="number" required><br>
                                     <input class="customInput mFont" name="Phone" placeholder="Restaurant's Phone Number *" value="<%=user.Phone%>" type="tel" required><br>
+
+                                    <select class="customInput mFont" name="bType" required>
+                                          <option value="">Select Business Type *</option>
+                                          <option value="individual">Individual</option>
+                                          <option value="partnership">Partnership</option>
+                                          <option value="proprietorship">Proprietorship</option>
+                                          <option value="private_limited">Private Limited</option>
+                                          <option value="public_limited">Public Limited</option>
+                                          <option value="trust">Trust</option>
+                                          <option value="society">Society</option>
+                                          <option value="not_yet_registered">Not Yet Registered</option>
+                                          <option value="llp">LLP</option>
+                                          <option value="ngo">NGO</option>
+                                          <option value="other">Others</option>
+                                    </select>
+                                    <br>
                                     <br>
                                     <button class="btn yelBtn" type="submit">Add Details</button>
-                              </form>                          
+                              </form>
                         </div>
 
                   </div>
@@ -126,51 +146,69 @@
 <!--Account Details-->
 <br>
 <div class="container">
-      
+
       <h4 class="mFont heading">Account Details</h4>
       <br>
-      <label for="AccName">Account Name</label>
+      <label for="AccName">Account Name *</label>
       <p class="mFont" id="AccName"><%= user.AccountName %></p>
       <br>
-      <label for="AccNum">Account Number</label>
+      <label for="AccNum">Account Number *</label>
       <p class="mFont" id="AccNum"><%= user.AccountNumber %></p>
       <br>
-      <label for="ifscCode">IFSC Code</label>
+      <label for="ifscCode">IFSC Code *</label>
       <p class="mFont" id="ifscCode"><%= user.IFSCcode %></p>
       <br>
-      <label for="upi">UPI ID</label>
-      <p class="mFont" id="upi"><%= user.upiID %></p>
+      <label for="AccountType">Account Type</label>
+      <p class="mFont" id="accountype"><%= user.AccountType %></p>
       <br>
-      <button class="mFont btn btn-danger" data-toggle="modal" 
-      data-target="#AccountDetails"><i class="fa fa-plus"></i> Add Details</button>
-
-      <div class="modal fade" id = "AccountDetails" tabindex="-1" 
+      <%if(user.RazAccountId && user.BussinessType){%>
+        <button class="mFont btn btn-success" disabled><i class="fa fa-check-circle"></i> Documents Submitted</button>
+      <%}else if(user.BussinessType){%>
+        <button class="mFont btn btn-danger" data-toggle="modal"
+        data-target="#AccountDetails"><i class="fa fa-plus"></i> Add Details</button>
+      <%}else{%>
+        <button class="mFont btn btn-danger" disabled><i class="fa fa-plus"></i> Add Details</button>
+        <p class="mFont">Complete the Restaurant Details.</p>
+        <%}%>
+      <div class="modal fade" id = "AccountDetails" tabindex="-1"
             role="dialog" aria-hidden="true">
-            
+
             <div class="modal-dialog" role="document">
-                 
+
                   <div class="modal-content">
-                        
+
                         <div class="modal-header">
-                              
+
                               <h5 class="modal-title mFont">Account Details</h5>
                               <button class="close" data-dismiss="modal">
                                     <span aria-hidden="true">&times;</span>
                               </button>
 
                         </div>
-                        
+
                         <div class="modal-body">
 
                               <form method="POST" action="/Account">
+
+                                    <input class="customInput mFont" name="AccountName" placeholder="Account Holder Name*" value="<%=user.AccountName%>" type="text" required><br>
+                                    <input class="customInput mFont" name="AccountNumber" onkeyup="check()" id="accountNum" placeholder="Account Number *" value="<%=user.AccountNumber%>" type="password" required><br>
+                                    <input class="customInput mFont" name="ReAccountNumber" onkeyup="check()" id="accountNum2" placeholder="Re-enter Account Number *" value="<%=user.AccountNumber%>" type="text" required><br>
+                                    <input class="customInput mFont" name="IFSCcode" id="IFSCc" placeholder="IFSC Code *" value="<%=user.IFSCcode%>" type="text" required><br>
+
+                                    <input name="Email" value="<%=user.email%>" style="display: none;">
+                                    <input name="RestaurantName" value="<%=user.RestaurantName%>" style="display: none;">
+                                    <input name="BussinessType" value="<%=user.BussinessType%>" style="display: none;">
+
+                                    <select class="customInput mFont" name="AccountType">
+                                          <option value="">Select Account Type *</option>
+                                          <option value="current">Current</option>
+                                          <option value="savings">Savings</option>
+                                    </select>
+                                    <br><br>
+                                   
+                                    <button id="AddAccount" class="btn yelBtn" type="submit" disabled>Add Details</button>
                                     
-                                    <input class="customInput mFont" name="AccountName" placeholder="Account Holder Name" value="<%=user.AccountName%>" type="text" required><br>
-                                    <input class="customInput mFont" name="AccountNumber" placeholder="Account Number" value="<%=user.AccountNumber%>" type="text" required><br>
-                                    <input class="customInput mFont" name="IFSCcode" placeholder="IFSC Code" value="<%=user.IFSCcode%>" type="text" required><br>
-                                    <input class="customInput mFont" name="UPIID" placeholder="UPI ID" value="<%=user.upiID%>" type="text" required><br>
-                                    <br>
-                                    <button class="btn yelBtn" type="submit">Add Details</button>
-                              </form>                          
+                              </form>
                         </div>
 
                   </div>
@@ -185,32 +223,32 @@
       <h4 class="mFont heading">Documents Details</h4>
       <br>
       <label for="Pan">Pan Number</label>
-      <p class="mFont" id="Pan"><%= user.pan %></p>
+      <p class="mFont" id="Pan"><%=user.pan%></p>
       <br>
       <label for="gstin">GSTIN</label>
-      <p class="mFont" id="gstin"><%= user.gstin %></p>
+      <p class="mFont" id="gstin"><%=user.gstin%></p>
       <br>
 
       <%if(user.Documentverified){%>
 
-            <button class="mFont btn btn-success" data-toggle="modal" 
+            <button class="mFont btn btn-success" data-toggle="modal"
             data-target="#DocumentDetails" disabled><i class="fa fa-check-circle"></i> Documents Verified</button>
       <%}else{%>
-            <button class="mFont btn btn-danger" data-toggle="modal" 
+            <button class="mFont btn btn-danger" data-toggle="modal"
             data-target="#DocumentDetails"><i class="fa fa-plus"></i> Add Details</button>
       <%}%>
 </div>
       <br>
 
-      <div class="modal fade" id = "DocumentDetails" tabindex="-1" 
+      <div class="modal fade" id = "DocumentDetails" tabindex="-1"
       role="dialog" aria-hidden="true">
-      
+
       <div class="modal-dialog" role="document">
-           
+
             <div class="modal-content">
-                  
+
                   <div class="modal-header">
-                        
+
                         <h5 class="modal-title mFont">Document Details</h5>
                         <button class="close" data-dismiss="modal">
                               <span aria-hidden="true">&times;</span>
@@ -220,18 +258,15 @@
 
                   <div class="modal-body">
 
-                        <form method="POST" action="/UploadDocument" enctype="multipart/form-data">
-                              
+                        <form method="POST" action="/UploadDocument">
+
                               <input class="customInput mFont" name="gst" placeholder="GSTIN *" value="<%=user.gstin%>" type="text" required><br>
-                              <br><input type="file" name="panFile" onchange="preview2()" accept="image/*" required>
+
                               <br><input class="customInput mFont" name="pan" placeholder="Pan *" value="<%=user.pan%>" type="text" required><br>
-                              <br><input type="file" name="gstFile" onchange="preview3()" accept="image/*" required><br>
+                              <br>
                               <br><button class="btn yelBtn" id="nUploadBtn" type="submit">Send Details for Verification</button>
                         </form>
-                        <br>
-                        <p id="Message1" class="mFont"><i id="statDoc1"></i> Note : GST Please upload Image File under 5 MB.</p>
-                        <p id="Message2" class="mFont"><i id="statDoc2"></i> Note : PAN Please upload Image File under 5 MB.</p>
-                        <p class="mFont">Note : Documents should be self attested</p>
+
                   </div>
             </div>
       </div>
@@ -239,5 +274,4 @@
 
 <script src="./scripts/Profile.js"></script>
 
-<%-include('partials/footer.ejs')%> 
-      
+<%-include('partials/footer.ejs')%>

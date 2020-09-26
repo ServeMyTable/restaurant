@@ -17,6 +17,10 @@ label{
       width: 100%;
 }
 
+.errorInput{
+    border : 1px solid var(--dark-red);
+}
+
 .customInput:hover{
       outline: none;
 } 

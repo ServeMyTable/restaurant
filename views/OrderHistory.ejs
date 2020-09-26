@@ -6,10 +6,10 @@
 
 <%-include('partials/navbar.ejs')%> 
 <div class="container">
-        <br><br>
+        <br>
         <%if(user.Documentverified && user.Accountverified){%>
-        <h2 class="mFont mt-10">Order History</h2>
-        <input type="text" id="SearchDish" onkeyup="filterItems()" placeholder="Search Orders Date" class="mFont searchBar"/>
+        <h2 class="mFont mt-10 fs-b">Order History</h2>
+        <input type="text" id="SearchDish" onkeyup="filterItems()" placeholder="Search Orders By Date in (m/dd/yyyy)" class="mFont searchBar"/>
         <br><br>
         <ul id="ListOfDishes" class="grid-container">
         <%for(var i=0 ; i < Orders.length ; i++){%>        

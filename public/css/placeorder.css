@@ -1,0 +1,95 @@
+.CounterPlus, .CounterMinus{
+        width: 30px;
+        height: 30px;
+        border-radius: 30px;
+        text-align: center;
+        color: black;
+        font-weight: 700;
+}
+  
+.CounterPlus{
+  
+        background-color: var(--theme-color);
+        border: 1px solid var(--theme-color);
+}
+.CounterMinus{
+        background-color: white;
+        border: 1px solid black;
+}
+
+.line-theme{
+
+        border: 1px solid var(--theme-color);
+        width: 100%;
+        background-color: var(--theme-color);
+}
+li{
+        list-style: none;
+}
+  
+ul,li{
+        margin: 0;
+        padding: 0;
+}
+
+.tags{
+        
+        border: 1px solid var(--theme-orange);
+        border-radius: 5px;
+        padding: 2px 5px;
+        color: var(--theme-orange);
+}
+
+.OrderPanel{
+        position: fixed;
+        right: 0;
+        top : 50%;
+        border : 1px solid black;
+        padding: 10px;
+        margin-right: 10px;
+        background-color: white;
+}
+
+.PlOr{
+        width: 100%;
+}
+
+.bg-white{
+
+        width: fit-content;
+}
+
+.inpt,.bg-white{
+        background-color: white;
+        padding: 10px;
+        border: none;
+}
+.inpt:focus{
+        border-bottom: 1px solid var(--theme-color);
+}
+
+#FinalOrders{
+        background-color: white;
+}
+
+.Order{
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--theme-color);
+}
+
+h3{
+        font-weight: bold;
+}
+
+.messageBox{
+        pointer-events: none;
+        display: none;
+}
+  
+@media (max-width: 700px) {
+  
+        .searchBar{
+              width: 20em;
+        }
+  
+}
