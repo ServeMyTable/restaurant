@@ -117,7 +117,9 @@ function payBill(){
 
                 document.getElementById("Message").style.display = "block";
                 document.getElementById("Message").innerText = "Enter all Fields";
-
+	}else if(document.getElementById('TableNo').value > document.getElementById('tableLen').innerText){
+		        document.getElementById("Message").style.display = "block";
+	                document.getElementById("Message").innerText = "Table Number not available.";
         }else{
                 axios.post('/PlaceOrder',{
                     
@@ -145,6 +147,7 @@ function filterItems(){
         h3 = document.getElementsByTagName("h3");
         hr = document.getElementsByClassName("categorical-line");
         for(i = 0 ; i < h3.length ; i++){
+		if(h3[i] && hr[i]){
                 if(filter === ""){
                         h3[i].style.display = "";
                         hr[i].style.display = "";
@@ -153,6 +156,7 @@ function filterItems(){
                         h3[i].style.display = "none";
                         hr[i].style.display = "none";
                 }
+		}
         }
         for(j = 1 ; j <= NoOfDishes; j++){
                         

@@ -6,170 +6,183 @@
 <body>
 
 <%-include('partials/navbar.ejs')%>
-<br>
-<div class="container">
-      <h2 class="mFont fs-b">Profile</h2>
-</div>
-<!--Basic Details-->
-<br><br>
-<div class="container">
-      <h4 class="mFont heading">Basic Details</h4>
       <br>
-      <label for="Name">Name</label>
-      <p class="mFont" id="Name"><%=user.username%></p>
-      <br>
-      <label for="email">Email Address</label>
-      <p class="mFont" id="email"><%=user.email%></p>
-</div>
+      <br><br>
+      <div class="container">
+            <div class="row">
+                  <div class="col-md-5">
+                  <%if(user.ImageUrl){%>
+                        <img id="restImage" src=<%=user.ImageUrl%> alt="Logo">
+                  <%}else{%>
+                        <p class="restImageClass mFont" id="restImage">No Image Found</p>
+                  <%}%>
+                  
+                  </div>
+                  <div class="col-md-7">
+                        
+                        <h1 class="mFont" id="restName"> <%= user.RestaurantName %></h1>
+                        <small class="mFont" id="Name"><%=user.username%></small>
+                        <p class="mFont" id="location"><%= user.Location %></p>
+                        <p class="mFont" id="email"><%=user.email%></p>
+                        <p class="mFont" id="restID"><%= user.Phone %></p>
 
-<!--Professional Details-->
-<br>
-<div class="container">
+                  </div>
+            </div>
+            <br>
+            <button id="uploadBtn" data-toggle="modal" data-target="#Modal" class="mFont btn btn-danger"><i class="fa fa-plus"></i> Upload Image </button>
+      </div>
 
-      <h4 class="mFont heading">Restaurant Details</h4>
-      <br>
+      
+      <div class="container">
+            <br>
+            <h4 class="mFont heading">Restaurant Details</h4>
+                  <br>
+                  <div class="row">
+                        <div class="col-md-4">
+                              <label for="BussinessType">Bussiness Type *</label>
+                              <p class="mFont" id="BussinessType"><%= user.BussinessType %></p>
+                        </div>
+                        <div class="col-md-4">
+                              <label for="location">Restaurant location *</label>
+                              <p class="mFont" id="location"><%= user.Location %></p>
+                        </div>
+                        <div class="col-md-4">
+                              <label for="tableno">Restaurant Number of tables *</label>
+                              <p class="mFont" id="tableno"><%= user.nTables %></p>
+                        </div>
+                  </div>
+                  <br>
 
-            <%if(user.ImageUrl){%>
-                  <img id="restImage" src=<%=user.ImageUrl%> width="300" height="300" alt="Logo">
+            <button class="mFont btn btn-danger" data-toggle="modal"
+            data-target="#RestaurantDetails"><i class="fa fa-plus"></i> Edit Details</button>
+                  <br>
+      </div>
+
+      <div class="container">
+            <br>
+            <h4 class="mFont heading">Account Details</h4>
+            <br>
+            <div class="row">
+                  <div class="col-md-3">
+                        <label for="AccName">Account Name *</label>
+                        <p class="mFont" id="AccName"><%= user.AccountName %></p>
+                  </div>
+                  <div class="col-md-3">
+                        <label for="AccNum">Account Number *</label>
+                        <p class="mFont" id="AccNum"><%= user.AccountNumber %></p>
+                  </div>
+                  <div class="col-md-3">
+                        <label for="ifscCode">IFSC Code *</label>
+                        <p class="mFont" id="ifscCode"><%= user.IFSCcode %></p>
+                  </div>
+                  <div class="col-md-3">
+                        <label for="AccountType">Account Type</label>
+                        <p class="mFont" id="accountype"><%= user.AccountType %></p>
+                  </div>
+            </div>
+
+            
+            <br>
+            <%if(user.RazAccountId && user.BussinessType){%>
+            <button class="mFont btn btn-success" disabled><i class="fa fa-check-circle"></i> Documents Submitted</button>
+            <%}else if(user.BussinessType){%>
+            <button class="mFont btn btn-danger" data-toggle="modal"
+            data-target="#AccountDetails"><i class="fa fa-plus"></i> Edit Details</button>
             <%}else{%>
-                  <p class="restImageClass mFont" id="restImage">No Image Found</p>
+            <button class="mFont btn btn-danger" disabled><i class="fa fa-plus"></i> Add Details</button>
+            <p class="mFont">Complete the Restaurant Details.</p>
             <%}%>
-            <button id="uploadBtn" data-toggle="modal" data-target="#Modal" class="mFont"><i class="fa fa-plus"></i></button>
+            
+      </div>
 
-            <div class="modal" tabindex="-1" role="dialog" id="Modal">
-                  <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                              <div class="modal-header"> Upload Restaurant Picture </div>
-                              <div class="modal-body">
-                                    <div class="container">
-                                          <img id="imagePreview" width="100px" height="100px"><br>
-                                          <br>
-                                          <form
-                                          method="POST"
-                                          action="/UploadImage"
-                                          enctype="multipart/form-data">
-                                                <input
-                                                      type="file"
-                                                      accept="image/*"
-                                                      id="imageInp"
-                                                      onchange="preview()"
-                                                      name="myFile"><br>
-                                                <br>
-                                                <button id="UploadImage" class="btn yelBtn">Upload Image</button>
-                                          </form>
-                                          <br>
-                                          <p id="Message" class="mFont"><i id="statImage"></i> Note : Please upload Image File under 5 MB.</p>
+      <br><br>
+      <div class="container">
+            <h4 class="mFont heading">Documents Details</h4>
+            <br>
+            <div class="row">
+                  <div class="col-md-6">
+                        <label for="Pan">Pan Number</label>
+                        <p class="mFont" id="Pan"><%=user.pan%></p>
+                  </div>
+                  <div class="col-md-6">
+                        <label for="gstin">GSTIN</label>
+                        <p class="mFont" id="gstin"><%=user.gstin%></p>
+                  </div>
+            </div>
+            <br>
+            <%if(user.Documentverified){%>
 
-                                    </div>
+                  <button class="mFont btn btn-success" data-toggle="modal"
+                  data-target="#DocumentDetails" disabled><i class="fa fa-check-circle"></i> Documents Verified</button>
+            <%}else{%>
+                  <button class="mFont btn btn-danger" data-toggle="modal"
+                  data-target="#DocumentDetails"><i class="fa fa-plus"></i> Edit Details</button>
+            <%}%>
+      </div>
+      <br>
+
+      <div class="modal fade" id = "DocumentDetails" tabindex="-1"
+      role="dialog" aria-hidden="true">
+
+      <div class="modal-dialog" role="document">
+
+            <div class="modal-content">
+
+                  <div class="modal-header">
+
+                        <h5 class="modal-title mFont">Document Details</h5>
+                        <button class="close" data-dismiss="modal">
+                              <span aria-hidden="true">&times;</span>
+                        </button>
+
+                  </div>
+
+                  <div class="modal-body">
+
+                        <form method="POST" action="/UploadDocument">
+
+                              <input class="customInput mFont" name="gst" placeholder="GSTIN *" value="<%=user.gstin%>" type="text" required><br>
+
+                              <br><input class="customInput mFont" name="pan" placeholder="Pan *" value="<%=user.pan%>" type="text" required><br>
+                              <br>
+                              <br><button class="btn yelBtn" id="nUploadBtn" type="submit">Send Details for Verification</button>
+                        </form>
+
+                  </div>
+            </div>
+      </div>
+      </div>
+
+      <div class="modal" tabindex="-1" role="dialog" id="Modal">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header"> Upload Restaurant Picture </div>
+                        <div class="modal-body">
+                              <div class="container">
+                                    <img id="imagePreview" width="100px" height="100px"><br>
+                                    <br>
+                                    <form
+                                    method="POST"
+                                    action="/UploadImage"
+                                    enctype="multipart/form-data">
+                                          <input
+                                                type="file"
+                                                accept="image/*"
+                                                id="imageInp"
+                                                onchange="preview()"
+                                                name="myFile"><br>
+                                          <br>
+                                          <button id="UploadImage" class="btn yelBtn">Upload Image</button>
+                                    </form>
+                                    <br>
+                                    <p id="Message" class="mFont"><i id="statImage"></i> Note : Please upload Image File under 5 MB.</p>
+
                               </div>
                         </div>
                   </div>
             </div>
-
-
-
-            <br>
-            <br>
-            <label for="restID">Restaurant Phone Number *</label>
-            <p class="mFont" id="restID"><%= user.Phone %></p>
-            <br>
-            <label for="restName">Restaurant Name *</label>
-            <p class="mFont" id="restName"><%= user.RestaurantName %></p>
-            <br>
-            <label for="BussinessType">Bussiness Type *</label>
-            <p class="mFont" id="BussinessType"><%= user.BussinessType %></p>
-            <br>
-            <label for="location">Restaurant location *</label>
-            <p class="mFont" id="location"><%= user.Location %></p>
-            <br>
-            <label for="tableno">Restaurant Number of tables *</label>
-            <p class="mFont" id="tableno"><%= user.nTables %></p>
-            <br>
-
-
-      <button class="mFont btn btn-danger" data-toggle="modal"
-      data-target="#RestaurantDetails"><i class="fa fa-plus"></i> Add Details</button>
-
-      <div class="modal fade" id = "RestaurantDetails" tabindex="-1"
-            role="dialog" aria-hidden="true">
-
-            <div class="modal-dialog" role="document">
-
-                  <div class="modal-content">
-
-                        <div class="modal-header">
-
-                              <h5 class="modal-title mFont">Restaurant Details</h5>
-                              <button class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">&times;</span>
-                              </button>
-
-                        </div>
-
-                        <div class="modal-body">
-
-                              <form method="POST" action="/Restaurant">
-
-                                    <input class="customInput mFont" name="RestaurantName" placeholder="Name of Restaurant *" value="<%=user.RestaurantName%>" type="text" required><br>
-                                    <input class="customInput mFont" name="Location" placeholder="Restaurant Location *" value="<%=user.Location%>" type="text" required><br>
-                                    <input class="customInput mFont" name="NumTables" placeholder="Number of Tables *" value="<%=user.nTables%>" type="number" required><br>
-                                    <input class="customInput mFont" name="Phone" placeholder="Restaurant's Phone Number *" value="<%=user.Phone%>" type="tel" required><br>
-
-                                    <select class="customInput mFont" name="bType" required>
-                                          <option value="">Select Business Type *</option>
-                                          <option value="individual">Individual</option>
-                                          <option value="partnership">Partnership</option>
-                                          <option value="proprietorship">Proprietorship</option>
-                                          <option value="private_limited">Private Limited</option>
-                                          <option value="public_limited">Public Limited</option>
-                                          <option value="trust">Trust</option>
-                                          <option value="society">Society</option>
-                                          <option value="not_yet_registered">Not Yet Registered</option>
-                                          <option value="llp">LLP</option>
-                                          <option value="ngo">NGO</option>
-                                          <option value="other">Others</option>
-                                    </select>
-                                    <br>
-                                    <br>
-                                    <button class="btn yelBtn" type="submit">Add Details</button>
-                              </form>
-                        </div>
-
-                  </div>
-
-            </div>
-
       </div>
 
-</div>
-
-<!--Account Details-->
-<br>
-<div class="container">
-
-      <h4 class="mFont heading">Account Details</h4>
-      <br>
-      <label for="AccName">Account Name *</label>
-      <p class="mFont" id="AccName"><%= user.AccountName %></p>
-      <br>
-      <label for="AccNum">Account Number *</label>
-      <p class="mFont" id="AccNum"><%= user.AccountNumber %></p>
-      <br>
-      <label for="ifscCode">IFSC Code *</label>
-      <p class="mFont" id="ifscCode"><%= user.IFSCcode %></p>
-      <br>
-      <label for="AccountType">Account Type</label>
-      <p class="mFont" id="accountype"><%= user.AccountType %></p>
-      <br>
-      <%if(user.RazAccountId && user.BussinessType){%>
-        <button class="mFont btn btn-success" disabled><i class="fa fa-check-circle"></i> Documents Submitted</button>
-      <%}else if(user.BussinessType){%>
-        <button class="mFont btn btn-danger" data-toggle="modal"
-        data-target="#AccountDetails"><i class="fa fa-plus"></i> Add Details</button>
-      <%}else{%>
-        <button class="mFont btn btn-danger" disabled><i class="fa fa-plus"></i> Add Details</button>
-        <p class="mFont">Complete the Restaurant Details.</p>
-        <%}%>
       <div class="modal fade" id = "AccountDetails" tabindex="-1"
             role="dialog" aria-hidden="true">
 
@@ -216,60 +229,55 @@
             </div>
 
       </div>
-</div>
 
-<br><br>
-<div class="container">
-      <h4 class="mFont heading">Documents Details</h4>
-      <br>
-      <label for="Pan">Pan Number</label>
-      <p class="mFont" id="Pan"><%=user.pan%></p>
-      <br>
-      <label for="gstin">GSTIN</label>
-      <p class="mFont" id="gstin"><%=user.gstin%></p>
-      <br>
+      <div class="modal fade" id = "RestaurantDetails" tabindex="-1"
+            role="dialog" aria-hidden="true">
 
-      <%if(user.Documentverified){%>
+            <div class="modal-dialog" role="document">
 
-            <button class="mFont btn btn-success" data-toggle="modal"
-            data-target="#DocumentDetails" disabled><i class="fa fa-check-circle"></i> Documents Verified</button>
-      <%}else{%>
-            <button class="mFont btn btn-danger" data-toggle="modal"
-            data-target="#DocumentDetails"><i class="fa fa-plus"></i> Add Details</button>
-      <%}%>
-</div>
-      <br>
+                  <div class="modal-content">
 
-      <div class="modal fade" id = "DocumentDetails" tabindex="-1"
-      role="dialog" aria-hidden="true">
+                        <div class="modal-header">
 
-      <div class="modal-dialog" role="document">
+                              <h5 class="modal-title mFont">Restaurant Details</h5>
+                              <button class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
 
-            <div class="modal-content">
+                        </div>
 
-                  <div class="modal-header">
+                        <div class="modal-body">
 
-                        <h5 class="modal-title mFont">Document Details</h5>
-                        <button class="close" data-dismiss="modal">
-                              <span aria-hidden="true">&times;</span>
-                        </button>
+                              <form method="POST" action="/Restaurant">
 
-                  </div>
+                                    <input class="customInput mFont" name="RestaurantName" placeholder="Name of Restaurant *" value="<%=user.RestaurantName%>" type="text" required><br>
+                                    <input class="customInput mFont" name="Location" placeholder="Restaurant Location *" value="<%=user.Location%>" type="text" required><br>
+                                    <input class="customInput mFont" name="NumTables" placeholder="Number of Tables *" value="<%=user.nTables%>" type="number" required><br>
 
-                  <div class="modal-body">
-
-                        <form method="POST" action="/UploadDocument">
-
-                              <input class="customInput mFont" name="gst" placeholder="GSTIN *" value="<%=user.gstin%>" type="text" required><br>
-
-                              <br><input class="customInput mFont" name="pan" placeholder="Pan *" value="<%=user.pan%>" type="text" required><br>
-                              <br>
-                              <br><button class="btn yelBtn" id="nUploadBtn" type="submit">Send Details for Verification</button>
-                        </form>
+                                    <select class="customInput mFont" name="bType" required>
+                                          <option value="">Select Business Type *</option>
+                                          <option value="individual">Individual</option>
+                                          <option value="partnership">Partnership</option>
+                                          <option value="proprietorship">Proprietorship</option>
+                                          <option value="private_limited">Private Limited</option>
+                                          <option value="public_limited">Public Limited</option>
+                                          <option value="trust">Trust</option>
+                                          <option value="society">Society</option>
+                                          <option value="not_yet_registered">Not Yet Registered</option>
+                                          <option value="llp">LLP</option>
+                                          <option value="ngo">NGO</option>
+                                          <option value="other">Others</option>
+                                    </select>
+                                    <br>
+                                    <br>
+                                    <button class="btn yelBtn" type="submit">Add Details</button>
+                              </form>
+                        </div>
 
                   </div>
+
             </div>
-      </div>
+
       </div>
 
 <script src="./scripts/Profile.js"></script>

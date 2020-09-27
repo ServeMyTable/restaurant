@@ -492,14 +492,12 @@ app.post('/Restaurant',function(req,res){
       const RestaurantName = req.body.RestaurantName;
       const Location = req.body.Location;
       const NumTables = req.body.NumTables;
-      const Phone = req.body.Phone;
       const BussinessType = req.body.bType;
 
       User.updateMany({_id:req.user._id},{$set:{
             RestaurantName : RestaurantName,
             Location : Location,
             nTables : NumTables,
-            Phone:Phone,
             BussinessType:BussinessType
             }},function(err,raw){
             if(err){
