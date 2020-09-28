@@ -117,7 +117,7 @@ function payBill(){
 
                 document.getElementById("Message").style.display = "block";
                 document.getElementById("Message").innerText = "Enter all Fields";
-	}else if(document.getElementById('TableNo').value > document.getElementById('tableLen').innerText){
+	}else if(parseInt(document.getElementById('TableNo').value) > parseInt(document.getElementById('tableLen').innerText)){
 		        document.getElementById("Message").style.display = "block";
 	                document.getElementById("Message").innerText = "Table Number not available.";
         }else{

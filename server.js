@@ -116,9 +116,16 @@ io.on('connection',function(socket){
 
       });
 });
+const storage = new Storage({
+      projectId : 'serve-my-table',
+      keyFilename : './key.json'
+});
+const bucketName = 'restaurant-documents';
+const bucket = storage.bucket(bucketName);
 
-//===========================AUTHENTICATION AND AUTHORIZATION================================
-
+//=============================================================================================================
+//Register
+app.get('/Register',function(req,res){ res.render('register.ejs',{Message : {msg : 2 , status : 2}}); });
 app.post('/Register',function(req,res){
 
       if(req.body.password === req.body.Cpassword){
@@ -151,6 +158,18 @@ app.post('/Register',function(req,res){
 
 });
 
+//Login
+app.get('/',function(req,res){
+
+      if(req.isAuthenticated()){
+
+            res.redirect("/Profile")
+
+      }else{
+            res.render('index.ejs',{Message : {status : 2 , msg : ""}});
+      }
+});
+
 app.post('/',function(req, res, next) {
 
       passport.authenticate('local', function(err, user, info) {
@@ -175,15 +194,8 @@ app.post('/',function(req, res, next) {
 
 });
 
-app.post("/Logout",function(req,res){
-      if (req.user) {
-            req.logout();
-            res.redirect("/");
-      } else {
-            res.render('Error.ejs',{error : "Error in logging out or You have already logged Out."});
-      }
-
-});
+//Forgot Password
+app.get('/forgot',function(req,res){ res.render('ForgotPassword.ejs',{Message : {msg : 2,status : 2}}); })
 
 app.post('/forgot',function(req,res){
       User.findOne({email : req.body.Email},function(err,doc){
@@ -270,23 +282,36 @@ app.post('/forgot',function(req,res){
       });
 });
 
-//=================================== GET REQUESTS ====================================
+//Change Password
+app.get('/change',function(req,res){res.render('ChangePassword.ejs',{Message:req.param('id')});})
+app.post('/ChangePass',function(req,res){
 
-app.get('/',function(req,res){
-
-      if(req.isAuthenticated()){
-
-            res.redirect("/Profile")
-
-      }else{
-            res.render('index.ejs',{Message : {status : 2 , msg : ""}});
-      }
+      bcrypt.hash(req.body.newPass,10,function(error,hash){
+            if(!error){
+                  User.findByIdAndUpdate(req.body.msg,{$set:{password : hash}},function(err,doc){
+                        if(err || !doc){
+                              res.render('index.ejs',{Message:{msg:"Failed to Change Password",status:0}})
+                        }else{
+                              res.render('index.ejs',{Message:{msg:"Password Changed Successfully!!",status:1}})
+                        }
+                  });
+            }
+      });
 });
 
-app.get('/Register',function(req,res){ res.render('register.ejs',{Message : {msg : 2 , status : 2}}); });
+//Logout
+app.post("/Logout",function(req,res){
+      if (req.user) {
+            req.logout();
+            res.redirect("/");
+      } else {
+            res.render('Error.ejs',{error : "Error in logging out or You have already logged Out."});
+      }
 
-app.get('/forgot',function(req,res){ res.render('ForgotPassword.ejs',{Message : {msg : 2,status : 2}}); })
+});
 
+//=============================================================================================================
+//Profile
 app.get('/Profile',function(req,res){
 
       if(req.isAuthenticated()){
@@ -305,109 +330,6 @@ app.get('/Profile',function(req,res){
       }else{
             res.render("index.ejs",{Message : {msg : 2 , status : 2}});
       }
-});
-
-app.get('/Dishes',function(req,res){
-      if(req.isAuthenticated()){
-            res.render("Dishes.ejs",{user : req.user});
-      }else{
-            res.render("index.ejs",{Message : {msg : 2 , status : 2}});
-      }
-});
-
-app.get('/Table',function(req,res){
-
-      if(req.isAuthenticated()){
-            Table.find({RestaurantID : req.user.Phone},function(err,tables){
-                  if(err){
-
-                        res.render("Table.ejs",{table : [],id:"",user:req.user});
-
-                  }else{
-                        res.render("Table.ejs",{table : tables,id:req.user.Phone,user:req.user});
-                  }
-            });
-      }else{
-            res.render("index.ejs",{Message : {msg : 2 , status : 2}});
-      }
-});
-
-app.get('/QR',function(req,res){
-      if(req.isAuthenticated()){
-            
-                const qrcodes = []
-                const num = req.user.nTables;
-                for(var i = 0 ; i <= num ; i++){
-
-                    const RestID = req.user.Phone;
-                    const TableNo = (i).toString();
-                    const urid = ('id='+RestID+'%26table='+TableNo).toString();
-                    const data = 'https://guest.servemytable.in/restaurant?'+urid;
-                    qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
-                }
-            res.render("QR.ejs",{qrcodes:qrcodes,user:req.user});
-            
-      }else{
-            res.render('index.ejs',{Message : {status : 2 , msg : 2}});
-      }
-});
-
-app.get('/OrderHistory',function(req,res){
-      if(req.isAuthenticated()){
-            OrderHistory.find({RestaurantID : req.user.Phone},function(err,doc){
-                  if(err){
-                        res.render('OrderHistory.ejs',{Orders : [],user:req.user});
-                  }else{
-                        res.render('OrderHistory.ejs',{Orders : doc,user:req.user});
-                  }
-            });
-      }else{
-            res.render('index.ejs',{Message : {status:2,msg:2}});
-      }
-});
-
-app.get('/change',function(req,res){res.render('ChangePassword.ejs',{Message:req.param('id')});})
-
-app.get('/PlaceOrder',function(req,res){
-
-      if(req.isAuthenticated()){
-            res.render('PlaceOrder.ejs',{
-                  Restaurant : {
-                        dishes : req.user.Dishes,
-                        full : req.user
-                  },
-                  user:req.user
-            });
-      }else{
-            res.render('index.ejs',{Message : {status:2,msg:2}});
-      }
-});
-
-//=================================== POST REQUESTS ===================================
-
-app.post('/QR',function(req,res){
-      
-      const num = req.body.qr;
-      if(num != req.user.nTables){
-            User.updateMany({_id : req.user._id},{$set : {nTables : num}},function(err){
-                  if(err){
-                        res.render('Error.ejs',{error : "Error in Updating Number of Tables"});
-                    }else{
-                        const qrcodes = []
-                        for(var i = 0 ; i <= num ; i++){
-                            const RestID = req.user.Phone;
-                            const TableNo = (i).toString();
-                            const urid = ('id='+RestID+'%26table='+TableNo).toString();
-                            const data = 'https://guest.servemytable.in/restaurant?'+urid;
-                            qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
-                        }
-                        res.render("QR.ejs",{qrcodes:qrcodes,user:req.user});
-                    }
-            })
-        }else{
-            res.redirect('/QR');
-        }
-
 });
 
 app.post('/Account',function(req,res){
@@ -486,6 +408,70 @@ app.post('/Account',function(req,res){
       }
 });
 
+app.post('/UploadImage',multer.single('myFile'),
+      function(req,res){
+
+            const gcsFileName = uuid.v1()+path.extname(req.file.originalname);
+            const file = bucket.file(gcsFileName);
+
+            const stream = file.createWriteStream({
+                  metadata: {
+                        contentType: req.file.mimetype,
+                  },
+            });
+
+            stream.on('error', (err) => {
+                  req.file.cloudStorageError = err;
+                  res.render('Error.ejs',{error : "Unable to Upload Document"});
+            });
+
+            stream.on('finish', () => {
+                  req.file.cloudStorageObject = gcsFileName;
+
+                  return file.makePublic()
+                        .then(() => {
+
+                              const Url = `https://storage.googleapis.com/${bucketName}/${gcsFileName}`;
+                              req.file.gcsUrl = Url;
+
+                              if(req.user.FileName){
+                                    bucket.file(req.user.FileName).delete();
+                              }
+
+                              User.updateOne({_id : req.user._id},{$set : {ImageUrl : Url , FileName : gcsFileName}},
+                                    function(err){
+                                          if(err){
+                                                res.render('Error.ejs',{error : "Error in Uploading"});
+                                          }else{
+                                                res.redirect('/Profile');
+                                          }
+                              });
+
+                  });
+            });
+
+            stream.end(req.file.buffer);
+
+
+});
+
+app.post('/UploadDocument',function(req,res){
+
+      const gstNum = req.body.gst;
+      const panNum = req.body.pan;
+
+      User.updateMany(
+            { _id : req.user._id },
+            {$set:{pan : panNum , gstin : gstNum}},
+            function(err,raw){
+                  if(err){
+                        res.render('Error.ejs',{error : "Error in Uploading."});
+                  }else{
+                        res.redirect("/Profile");
+                  }
+            });
+});
+
 app.post('/Restaurant',function(req,res){
 
 
@@ -506,6 +492,63 @@ app.post('/Restaurant',function(req,res){
                   res.redirect("/Profile");
             }
       });
+});
+
+//=============================================================================================================
+//Table Management
+app.get('/Table',function(req,res){
+
+      if(req.isAuthenticated()){
+            Table.find({RestaurantID : req.user.Phone},function(err,tables){
+                  if(err){
+
+                        res.render("Table.ejs",{table : [],id:"",user:req.user});
+
+                  }else{
+                        res.render("Table.ejs",{table : tables,id:req.user.Phone,user:req.user});
+                  }
+            });
+      }else{
+            res.render("index.ejs",{Message : {msg : 2 , status : 2}});
+      }
+});
+
+app.post('/OrderCompleted',function(req,res){
+      const tableNo = req.body.TableNo;
+      const RestaurantID = req.body.RestaurantId;
+
+      Table.findOne({RestaurantID : RestaurantID,tableNo :tableNo},function(err,doc){
+            if(!err){
+                  OrderHistory.insertMany(doc,function(error,addedDoc){
+                        if(!error){
+                              Table.findByIdAndDelete({_id : doc._id},
+                                    function(e){
+                                    if(!e){
+                                          res.redirect('/Table');
+                                    }else{
+                                          res.render('Error.ejs',{error : "Server Error"});
+                                    }
+                              });
+                        }else{
+                              res.render('Error.ejs',{error : "Error in Updating Details"});
+                        }
+                  });
+            }
+            else{
+                  res.render('Error.ejs',{error : "User Not Found"});
+            }
+      });
+
+});
+
+//=============================================================================================================
+//Dish
+app.get('/Dishes',function(req,res){
+      if(req.isAuthenticated()){
+            res.render("Dishes.ejs",{user : req.user});
+      }else{
+            res.render("index.ejs",{Message : {msg : 2 , status : 2}});
+      }
 });
 
 app.post('/Dish',function(req,res){
@@ -619,47 +662,85 @@ app.post('/UpdateDish',function(req,res){
 
 });
 
-app.post('/OrderCompleted',function(req,res){
-      const tableNo = req.body.TableNo;
-      const RestaurantID = req.body.RestaurantId;
+//=============================================================================================================
+//QR codes
+app.get('/QR',function(req,res){
+      if(req.isAuthenticated()){
+            
+                const qrcodes = []
+                const num = req.user.nTables;
+                for(var i = 0 ; i <= num ; i++){
 
-      Table.findOne({RestaurantID : RestaurantID,tableNo :tableNo},function(err,doc){
-            if(!err){
-                  OrderHistory.insertMany(doc,function(error,addedDoc){
-                        if(!error){
-                              Table.findByIdAndDelete({_id : doc._id},
-                                    function(e){
-                                    if(!e){
-                                          res.redirect('/Table');
-                                    }else{
-                                          res.render('Error.ejs',{error : "Server Error"});
-                                    }
-                              });
-                        }else{
-                              res.render('Error.ejs',{error : "Error in Updating Details"});
+                    const RestID = req.user.Phone;
+                    const TableNo = (i).toString();
+                    const urid = ('id='+RestID+'%26table='+TableNo).toString();
+                    const data = 'https://guest.servemytable.in/restaurant?'+urid;
+                    qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
+                }
+            res.render("QR.ejs",{qrcodes:qrcodes,user:req.user});
+            
+      }else{
+            res.render('index.ejs',{Message : {status : 2 , msg : 2}});
+      }
+});
+
+app.post('/QR',function(req,res){
+      
+      const num = req.body.qr;
+      if(num != req.user.nTables){
+            User.updateMany({_id : req.user._id},{$set : {nTables : num}},function(err){
+                  if(err){
+                        res.render('Error.ejs',{error : "Error in Updating Number of Tables"});
+                    }else{
+                        const qrcodes = []
+                        for(var i = 0 ; i <= num ; i++){
+                            const RestID = req.user.Phone;
+                            const TableNo = (i).toString();
+                            const urid = ('id='+RestID+'%26table='+TableNo).toString();
+                            const data = 'https://guest.servemytable.in/restaurant?'+urid;
+                            qrcodes.push('https://api.qrserver.com/v1/create-qr-code/?data='+data);
                         }
-                  });
-            }
-            else{
-                  res.render('Error.ejs',{error : "User Not Found"});
-            }
-      });
+                        res.render("QR.ejs",{qrcodes:qrcodes,user:req.user});
+                    }
+            })
+        }else{
+            res.redirect('/QR');
+        }
 
 });
 
-app.post('/ChangePass',function(req,res){
 
-      bcrypt.hash(req.body.newPass,10,function(error,hash){
-            if(!error){
-                  User.findByIdAndUpdate(req.body.msg,{$set:{password : hash}},function(err,doc){
-                        if(err || !doc){
-                              res.render('index.ejs',{Message:{msg:"Failed to Change Password",status:0}})
-                        }else{
-                              res.render('index.ejs',{Message:{msg:"Password Changed Successfully!!",status:1}})
-                        }
-                  });
-            }
-      });
+//=============================================================================================================
+//Order History
+app.get('/OrderHistory',function(req,res){
+      if(req.isAuthenticated()){
+            OrderHistory.find({RestaurantID : req.user.Phone},function(err,doc){
+                  if(err){
+                        res.render('OrderHistory.ejs',{Orders : [],user:req.user});
+                  }else{
+                        res.render('OrderHistory.ejs',{Orders : doc,user:req.user});
+                  }
+            });
+      }else{
+            res.render('index.ejs',{Message : {status:2,msg:2}});
+      }
+});
+
+//=============================================================================================================
+//Place Order
+app.get('/PlaceOrder',function(req,res){
+
+      if(req.isAuthenticated()){
+            res.render('PlaceOrder.ejs',{
+                  Restaurant : {
+                        dishes : req.user.Dishes,
+                        full : req.user
+                  },
+                  user:req.user
+            });
+      }else{
+            res.render('index.ejs',{Message : {status:2,msg:2}});
+      }
 });
 
 app.post('/PlaceOrder',function(req,res){
@@ -675,9 +756,8 @@ app.post('/PlaceOrder',function(req,res){
             });
       }
 
-      Table.updateMany({RestaurantID:req.user.Phone,tableNo : req.body.TableNo},
+      Table.insert(
             {
-            $set :{
                   RestaurantID : req.user.Phone,
                   tableNo : req.body.TableNo,
                   Orders : Orders,
@@ -686,9 +766,8 @@ app.post('/PlaceOrder',function(req,res){
                   CustomerName : req.body.CustomerName,
                   PaymentMode : "Placed",
                   PaymentStatus : true
-            }
-            },{ upsert:true }
-            ,function(error,raw){
+            },function(error,raw){
+            
             if(!error){
                   res.send("Done");
             }else{
@@ -698,82 +777,10 @@ app.post('/PlaceOrder',function(req,res){
 
 });
 
-const storage = new Storage({
-      projectId : 'serve-my-table',
-      keyFilename : './key.json'
-});
-const bucketName = 'restaurant-documents';
-const bucket = storage.bucket(bucketName);
-
-
-app.post('/UploadImage',multer.single('myFile'),
-      function(req,res){
-
-            const gcsFileName = uuid.v1()+path.extname(req.file.originalname);
-            const file = bucket.file(gcsFileName);
-
-            const stream = file.createWriteStream({
-                  metadata: {
-                        contentType: req.file.mimetype,
-                  },
-            });
-
-            stream.on('error', (err) => {
-                  req.file.cloudStorageError = err;
-                  res.render('Error.ejs',{error : "Unable to Upload Document"});
-            });
-
-            stream.on('finish', () => {
-                  req.file.cloudStorageObject = gcsFileName;
-
-                  return file.makePublic()
-                        .then(() => {
-
-                              const Url = `https://storage.googleapis.com/${bucketName}/${gcsFileName}`;
-                              req.file.gcsUrl = Url;
-
-                              if(req.user.FileName){
-                                    bucket.file(req.user.FileName).delete();
-                              }
-
-                              User.updateOne({_id : req.user._id},{$set : {ImageUrl : Url , FileName : gcsFileName}},
-                                    function(err){
-                                          if(err){
-                                                res.render('Error.ejs',{error : "Error in Uploading"});
-                                          }else{
-                                                res.redirect('/Profile');
-                                          }
-                              });
-
-                  });
-            });
-
-            stream.end(req.file.buffer);
-
-
-});
-
-app.post('/UploadDocument',function(req,res){
-
-      const gstNum = req.body.gst;
-      const panNum = req.body.pan;
-
-      User.updateMany(
-            { _id : req.user._id },
-            {$set:{pan : panNum , gstin : gstNum}},
-            function(err,raw){
-                  if(err){
-                        res.render('Error.ejs',{error : "Error in Uploading."});
-                  }else{
-                        res.redirect("/Profile");
-                  }
-            });
-});
-
+//=============================================================================================================
 
 app.get('*',function(req,res){
       res.render('404.ejs');
 });
-//=================================== LISTEN ON PORT ==================================
 
-server.listen(process.env.PORT || 5000,function(){ console.log('Server is up and Running on http://localhost:3000'); });
+server.listen(process.env.PORT || 5000,function(){ console.log('Server is up and Running on http://localhost:5000'); });

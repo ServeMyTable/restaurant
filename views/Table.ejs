@@ -14,7 +14,7 @@
       <br><br>
       <ul id="ListOfTables" class="grid-container">
       <%for(var i = 0; i < table.length; i++){%>
-           <%if(table[i].PaymentStatus){%>
+           
             <li class="grid-item">
                   <a style="display: none;"><%=table[i].tableNo%></a>
                   <div class="card">
@@ -48,6 +48,9 @@
                                                       </div>
                                                 <%}%>
                                     </div>
+                                    <div>
+                                          <%=table[i].MessageChef%>
+                                    </div>
                                     <form method="POST" action="/OrderCompleted">
                                           <input name="TableNo" value="<%=table[i].tableNo%>" style="display: none;">
                                           <input name="RestaurantId" value="<%=id%>" style="display: none;">
@@ -57,7 +60,7 @@
                   </div>
 
             </li>
-            <%}%>
+            
       <%}%>
       </ul>
       <%}else{%>
