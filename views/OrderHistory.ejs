@@ -20,6 +20,7 @@
                                 Table No. <%=Orders[i].tableNo%>
                                 <br><%=Orders[i].CustomerName%>
                                 <br><small><%=Orders[i].OrderPlacedDate%><%=Orders[i].OrderPlacedTime%></small>
+                                <br><small><%=Orders[i].PaymentID%></small>
                         </div>
                         <div class="card-body">
                                 <%for(var k=0 ; k < Orders[i].Orders.length ; k++){%>

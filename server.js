@@ -756,8 +756,8 @@ app.post('/PlaceOrder',function(req,res){
             });
       }
 
-      Table.insert(
-            {
+      Table.insertMany(
+            [{
                   RestaurantID : req.user.Phone,
                   tableNo : req.body.TableNo,
                   Orders : Orders,
@@ -766,7 +766,7 @@ app.post('/PlaceOrder',function(req,res){
                   CustomerName : req.body.CustomerName,
                   PaymentMode : "Placed",
                   PaymentStatus : true
-            },function(error,raw){
+            }],function(error,raw){
             
             if(!error){
                   res.send("Done");
