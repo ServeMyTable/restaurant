@@ -95,8 +95,7 @@ function getOrders(){
 
         document.getElementById('subTotal').innerHTML = subTotal;
         document.getElementById('ServiceFee').innerHTML = Math.round((0.02*subTotal + Number.EPSILON) * 100) / 100;
-        document.getElementById('cgst').innerHTML = Math.round((0.025*subTotal + Number.EPSILON) * 100) / 100;
-        document.getElementById('sgst').innerHTML = Math.round((0.025*subTotal + Number.EPSILON) * 100) / 100;
+        document.getElementById('cgst').innerHTML = Math.round((0.05*subTotal + Number.EPSILON) * 100) / 100;
         document.getElementById('finalTotal').innerHTML =Math.round((1.07*subTotal + Number.EPSILON) * 100) / 100;
 }
 

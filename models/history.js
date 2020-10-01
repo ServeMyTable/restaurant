@@ -57,8 +57,7 @@ const tableSchema = new Schema({
       },
       PaymentMode : { type : String },
       PaymentStatus : {type : Boolean, default:false},
-      PaymentID : {type: String , default : ""},
-      MessageChef : {type : String , default : ""}
+      PaymentID : {type: String , default : ""}
 },{
         timestamps:true
 });

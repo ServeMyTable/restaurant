@@ -14,7 +14,7 @@
       <br><br>
       <ul id="ListOfTables" class="grid-container">
       <%for(var i = 0; i < table.length; i++){%>
-           
+           <%if(table[i].PaymentStatus){%>
             <li class="grid-item">
                   <a style="display: none;"><%=table[i].tableNo%></a>
                   <div class="card">
@@ -24,6 +24,7 @@
                                       <%=table[i].CustomerName%>
 
                                     </h6>
+                                    <p><%= table[i].notes%></p>
                                     <h6 class="mFont tag"><%= table[i].PaymentMode %></h6>
 
                               </div>
@@ -60,7 +61,7 @@
                   </div>
 
             </li>
-            
+            <%}%>
       <%}%>
       </ul>
       <%}else{%>

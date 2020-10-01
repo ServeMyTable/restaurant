@@ -9,47 +9,41 @@
         <br>
         <%if(user.Documentverified && user.Accountverified){%>
         <h2 class="mFont mt-10 fs-b">Order History</h2>
-        <input type="text" id="SearchDish" onkeyup="filterItems()" placeholder="Search Orders By Date in (m/dd/yyyy)" class="mFont searchBar"/>
+        <input type="text" id="SearchDish" onkeyup="filterItems()" placeholder="Search Orders By Date in (mm/dd/yyyy)" class="mFont searchBar"/>
         <br><br>
-        <ul id="ListOfDishes" class="grid-container">
+        <table class="table" id="historyTable">
+        <thead class="shadow-sm">
+           
+        <tr role="row">
+            <th class="th-sm mFont">S.No.</th>
+            <th class="th-sm mFont">Date</th>
+            <th class="th-sm mFont">Time</th>
+            <th class="th-sm mFont">Table No.</th>
+            <th class="th-sm mFont">Customer Name</th>
+            <th class="th-sm mFont">Payment ID</th>
+            <th class="th-sm mFont">Total Bill</th>
+            <th class="th-sm mFont">Order</th>
+        </tr>
+        </thead>
+        <tbody id="dtBasic">
         <%for(var i=0 ; i < Orders.length ; i++){%>        
-        <li class="grid-item">
-                <a style="display: none;"><%=Orders[i].OrderPlacedDate%></a>
-                <div class="card">
-                        <div class="card-header">
-                                Table No. <%=Orders[i].tableNo%>
-                                <br><%=Orders[i].CustomerName%>
-                                <br><small><%=Orders[i].OrderPlacedDate%><%=Orders[i].OrderPlacedTime%></small>
-                                <br><small><%=Orders[i].PaymentID%></small>
-                        </div>
-                        <div class="card-body">
-                                <%for(var k=0 ; k < Orders[i].Orders.length ; k++){%>
-                                        <div class="row">
-                                                <div class="col-8 mFont">
-                                                        <%=Orders[i].Orders[k].DishName%>
-                                                </div>
-                                                <div class="col-4 mFont">
-                                                        <%=Orders[i].Orders[k].Quantity%>
-                                                </div>
-                                        </div>
-                                <%}%>
-                        </div>
-                        <div class="card-footer">
-                                <div class="row">
-                                        <div class="col-8 mFont">
-                                                Total
-                                        </div>
-                                        <div class="col-4 mFont">
-                                                <strong><%=Orders[i].TotalBill%></strong>
-                                        </div>
-                                </div>
-                                <div class="row">
-                                        <button class="btn yel-outline" data-toggle="modal" 
-                                        data-target="#Bill<%=i+1%>" onclick="printDiv()">Download Bill</button>
-                                </div>
-                        </div>
-                        <div class="modal fade" id = "Bill<%=i+1%>" tabindex="-1" 
-                        role="dialog" aria-hidden="true">
+        
+        <a style="display: none;"><%=Orders[i].OrderPlacedDate%></a>
+            
+            <tr role="row" class="tableRow">
+            
+                <th scope="row"><%=(i+1)%></th>
+                <td class="SearchByDate"><%=Orders[i].OrderPlacedDate%></td>
+                <td><%=Orders[i].OrderPlacedTime%></td>
+                <td><%=Orders[i].tableNo%></td>
+                <td><%=Orders[i].CustomerName%></td>
+                <td><%=Orders[i].PaymentID%></td>
+                <td><%=Orders[i].TotalBill%></td>
+                <td><button class="btn yel-outline" data-toggle="modal" 
+                        data-target="#Bill<%=i+1%>" onclick="printDiv()">Download Bill</button></td>
+            </tr>
+            <div class="modal fade" id = "Bill<%=i+1%>" tabindex="-1" 
+                role="dialog" aria-hidden="true">
                                 
                                 <div class="modal-dialog" id="printBill" role="document">
                                         
@@ -132,28 +126,16 @@
                                                         <div class="row">
 
                                                                 <div class="col-2 offset-5 mFont">
-                                                                      CGST
+                                                                      GST
                                                                 </div>
                                                                 <div class="col-2 mFont">
-                                                                      2.5%
+                                                                      5%
                                                                 </div>
                                                                 <div class="col-2 offset-1 mFont" id="CGST">
-                                                                        <%= Math.round((Orders[i].SubTotal*0.025 + Number.EPSILON) * 100) / 100%>
+                                                                        <%= Math.round((Orders[i].SubTotal*0.05 + Number.EPSILON) * 100) / 100%>
                                                                 </div>
                                                         </div>
                                         
-                                                        <div class="row">
-                                        
-                                                                <div class="col-2 offset-5 mFont">
-                                                                      SGST
-                                                                </div>
-                                                                <div class="col-2 mFont">
-                                                                      2.5%
-                                                                </div>
-                                                                <div class="col-2 offset-1 mFont" id="SGST">
-                                                                        <%= Math.round((Orders[i].SubTotal*0.025 + Number.EPSILON) * 100) / 100%>
-                                                                </div>
-                                                        </div>
                                                         <div class="row totalBox">
                                                                 <div class="mFont col-2 offset-7">
                                                                       Total
@@ -176,11 +158,12 @@
                                         </div>
                                         
                                 </div>
-                        </div>
-                </div>
-        </li>
+            </div>
+                
         <%}%>
-        </ul>
+        </tbody>
+        </table>
+        
         <%}else{%>
                 <%-include('partials/AccountVerification.ejs')%> 
         <%}%>

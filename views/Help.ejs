@@ -1,0 +1,56 @@
+<%- include('partials/header.ejs')%>
+<link rel="stylesheet" href="./css/Help.css">  
+</head>
+<body>
+
+<%-include('partials/navbar.ejs')%>
+
+
+<div class="container">
+        <br><br>
+        
+        
+        <div class="row">
+        <div class="col-md-6 col-sm-12">
+                <h2 class="mFont">Need any help ?</h2>
+                <br><br>
+                <form id="myForm" method="POST" action="/helpForm">
+                <div>
+                    <%if(Message.status === 0){%>
+                        <button class="alert alert-danger mt-10 mb-10 mFont messageBox" role="alert"> <%=Message.msg%> </button>
+                    <%}%>
+                    <%if(Message.status === 1){%>
+                            <button class="alert alert-success mt-10 mb-10 mFont messageBox" role="alert"> <%=Message.msg%> </button>
+                    <%}%>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message" class="mFont"> Feel free to message us. </label>
+                    <textarea 
+                    type="text" 
+                    class="form-control mFont" id="message" 
+                    placeholder="Message" rows="3"
+                    name="Message"
+                    required
+                    ></textarea>
+                </div>
+                <button class="btn btn-lg btn-block yel-outline mFont">Send Message</button>
+                </form>
+                <br>
+                <h6 class="mFont"><strong>Note</strong> : We will get back to you within next 3 working days.</h6>  
+                <br>
+                <label for="message" class="mFont"> Social Media </label>
+                <br>
+                <a class="btn btn-outline-success socialBtn"  href="https://api.whatsapp.com/send?phone=+919730525275&text='Hi from <%=user.Phone%>'"><img src="../assets/whatsapp.png" width="20" height="20" /> WhatsApp</a>
+                <a class="btn btn-outline-danger socialBtn" href="mailto:servemytable@gmail.com?subject='Query'&Body='Hi from <%=user.Phone%>'"><img src="../assets/gmail.png" width="20" height="20"/> Email</a>
+        </div>
+        <div class="col-md-6">
+                <img class="imgHidden" src="http://servemytable.in/assets/ContactIcon.svg"/>
+        </div>
+        </div> 
+        
+
+</div>
+
+<br><br>
+<%-include('partials/footer.ejs')%>

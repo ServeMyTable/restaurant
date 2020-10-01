@@ -46,9 +46,13 @@
                                                                 </p>
                                                         </div>
                                                         <div class="col-4">
-                                                                <button class="CounterMinus" onclick="decrement('<%=j+1%>')">-</button>
-                                                                &nbsp;<a id="Quantity<%=j+1%>">0</a> &nbsp;
-                                                                <button class="CounterPlus" onclick="increment( '<%=j+1%>' )">+</button>
+                                                                <%if(Restaurant.dishes[j].Available == true){%>
+                                                                        <button class="CounterMinus" onclick="decrement('<%=j+1%>')">-</button>
+                                                                        &nbsp;<a id="Quantity<%=j+1%>">0</a> &nbsp;
+                                                                        <button class="CounterPlus" onclick="increment( '<%=j+1%>' )">+</button>
+                                                                <%}else{%>
+                                                                        <label class="mFont tags">UnAvailable</label>
+                                                                <%}%>
                                                         </div>
                                                 </div>
 
@@ -115,26 +119,17 @@
 
                                         <div class="row">
                                                 <div class="col-3 offset-6 mFont">
-                                                        CGST(2.5%)
+                                                        GST(5%)
                                                 </div>
                                                 <div class="col-3 mFont" id="cgst">
                                                         
                                                 </div>
                                         </div>
 
-                                        <div class="row">
-                                                <div class="col-3 offset-6 mFont">
-                                                        SGST(2.5%)
-                                                </div>
-
-                                                <div class="col-3 mFont" id="sgst">
-                                                        
-                                                </div>
-                                        </div>
 
                                         <div class="row">
                                                 <div class="col-3 offset-6 mFont">
-                                                        Ser. Fee(2%)
+                                                        SMT Charges(2%)
                                                 </div>
                                                 <div class="col-3 mFont" id="ServiceFee">
                                                         

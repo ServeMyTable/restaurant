@@ -20,80 +20,96 @@
       </div>
       <input type="text" id="SearchDish" onkeyup="filterItems()" placeholder="Search Dish Name" class="mFont searchBar"/>
       <br><br>
-      <ul id="ListOfDishes" class="grid-container">
+      <ul id="ListOfDishes" class="row">
       <%for(var i = 0 ; i < user.Dishes.length ; i++){%>
-            <li class="grid-item">
-                  <a style="display: none;"><%=user.Dishes[i].DishName%></a>  
-            <br><br>
-            <div class="card">
-                  <div class="card-header">
-                        <h5 class="card-title mFont" name="DishName"><%=user.Dishes[i].DishName%></h5>
-                  </div>
-                  <div class="card-body">
-                        <p class="mFont"><%=user.Dishes[i].Category%></p>
-                        <p class="mFont"><%=user.Dishes[i].Description%></p>
-                        <p class="mFont"><%=user.Dishes[i].Price%></p>
-                        
-                        <%for(var k = 0 ; k < user.Dishes[i].tags.length ; k++){%>
-                              <span class="mFont tags"><%=user.Dishes[i].tags[k]%></span>
-                        <%}%>
-                        <br><br>
-                        <div style="display: inline-block;">
-                              <form method="POST" action="/DeleteDish">
+            <li class="col-md-4">
+                <a style="display: none;"><%=user.Dishes[i].DishName%></a>  
+                <br><br>
+                <div class="card">
+                    <div class="card-header">
+                            <h5 class="card-title mFont" name="DishName"><%=user.Dishes[i].DishName%></h5>
+                    </div>
+                    <div class="card-body" style="background-color: rgba(255, 242, 191, 0.761);">
+                            <p class="mFont">Category : <%=user.Dishes[i].Category%></p>
+                            <p class="mFont">Description : <%=user.Dishes[i].Description%></p>
+                            <p class="mFont"><%=user.Dishes[i].Price%></p>
+                            <%if(user.Dishes[i].tags){%>
+                            <%for(var k = 0 ; k < user.Dishes[i].tags.length ; k++){%>
+                                <span class="mFont tags"><%=user.Dishes[i].tags[k]%></span>
+                            <%}%>
+                            <%}%>
+                            <br><br>
+                            <div style="display: inline-block;">
+                                <form method="POST" action="/DeleteDish">
                                     <input name="DishID" value="<%=user.Dishes[i]._id%>"  style="display:none;">
+                                    <input name="DeleteCategory" value="<%=user.Dishes[i].Category%>"  style="display:none;">
                                     <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Delete</button>
-                              </form>
-                        </div>
-                        <button class="btn btn-warning" data-toggle="modal" data-target="#updateModal<%=(i+1)%>"><i class="fa fa-edit"></i> Edit</button>
-                        <div class="modal fade" id="updateModal<%=(i+1)%>" tabindex="-1" role="dialog">
-                              <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                          <div class="modal-header">
-                                                <h5 class="modal-title">Update Dish</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                      <span aria-hidden="true">&times;</span>
-                                                </button>
-                                          </div>
-                                          <div class="modal-body">
-                                                
-                                                <form method="POST" action="/UpdateDish">
-                                                      <input name="DishID" value="<%=user.Dishes[i]._id%>"  style="display:none;">
-                                                      <input class="loginInput mFont w-100" value="<%=user.Dishes[i].DishName%>" name="DishName" placeholder="Dish Name" type="text" required><br>
-                                                      <input class="loginInput mFont w-100" value="<%=user.Dishes[i].Description%>" name="DishDes" placeholder="Dish Description" type="text"><br>
-                                                      <input class="loginInput mFont w-100" value="<%=user.Dishes[i].Category%>" name="Category" placeholder="Category" type="text" required><br>
-                                                      <small class="mFont" style="color: var(--theme-grey);padding-left: 10px;">Example : Starter,Main Course etc.</small>
-                                                      <input class="loginInput mFont w-100" value="<%=user.Dishes[i].Price%>" name="Price" placeholder="Price" type="text" required><br>
-                                                      <br>
-                                                      <label for="s" class="s">Speciality
-                                                      <input type="checkbox" class="customCheckbox mFont" id="s" value="Speciality" name="tags">
-                                                      </label>
-                                                      
-                                                      <label for="sp" class="sp">Spicy
-                                                      <input type="checkbox" id="sp" class="customCheckbox mFont" value="Spicy" name="tags">
-                                                      </label>      
-                                                      
-                                                      <label for="ms" class="ms">Med. Spicy
-                                                      <input type="checkbox" id="ms" class="customCheckbox mFont" value="Med. Spicy" name="tags">
-                                                      </label>
+                                </form>
+                            </div>
+                            <div style="display: inline-block;">
+                                <button class="btn btn-warning" data-toggle="modal" data-target="#updateModal<%=(i+1)%>"><i class="fa fa-edit"></i> Edit</button>
+                            </div>
+                            <div style="display: inline-block;">
+                                <form method="POST" action="/Availibility">
+                                        <input name="Dish_ID" value="<%=user.Dishes[i]._id%>"  style="display:none;">
+                                        <input name="Status" value="<%=user.Dishes[i].Available%>" style="display: none;">
+                                        <%if(user.Dishes[i].Available == true){%>
+                                            <input class="mFont btn yel-outline" type="submit" value="Available" >
+                                        <%}if(user.Dishes[i].Available == false){%> 
+                                            <input class="mFont btn yel-outline" type="submit" value="Un-Available" >
+                                        <%}%>
+                                </form>
+                            </div>
 
-                                                      <label class="ms">Sweet
-                                                      <input type="checkbox"  class="customCheckbox mFont" value="Sweet" name="tags">
-                                                      </label>
+                            <div class="modal fade" id="updateModal<%=(i+1)%>" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                    <h5 class="modal-title">Update Dish</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                    
+                                                    <form method="POST" action="/UpdateDish">
+                                                        <input name="DishID" value="<%=user.Dishes[i]._id%>"  style="display:none;">
+                                                        <input class="loginInput mFont w-100" value="<%=user.Dishes[i].DishName%>" name="DishName" placeholder="Dish Name" type="text" required><br>
+                                                        <input class="loginInput mFont w-100" value="<%=user.Dishes[i].Description%>" name="DishDes" placeholder="Dish Description" type="text"><br>
+                                                        <input class="loginInput mFont w-100" value="<%=user.Dishes[i].Category%>" name="Category" placeholder="Category" type="text" required><br>
+                                                        <small class="mFont" style="color: var(--theme-grey);padding-left: 10px;">Example : Starter,Main Course etc.</small>
+                                                        <input class="loginInput mFont w-100" value="<%=user.Dishes[i].Price%>" name="Price" placeholder="Price" type="text" required><br>
+                                                        <br>
+                                                        <label for="s" class="s">Speciality
+                                                        <input type="checkbox" class="customCheckbox mFont" id="s" value="Speciality" name="tags">
+                                                        </label>
+                                                        
+                                                        <label for="sp" class="sp">Spicy
+                                                        <input type="checkbox" id="sp" class="customCheckbox mFont" value="Spicy" name="tags">
+                                                        </label>      
+                                                        
+                                                        <label for="ms" class="ms">Med. Spicy
+                                                        <input type="checkbox" id="ms" class="customCheckbox mFont" value="Med. Spicy" name="tags">
+                                                        </label>
 
-                                                      <label class="ms">Must Try
-                                                      <input type="checkbox" class="customCheckbox mFont" value="Must Try" name="tags">
-                                                      </label>
+                                                        <label class="ms">Sweet
+                                                        <input type="checkbox"  class="customCheckbox mFont" value="Sweet" name="tags">
+                                                        </label>
 
-                                                      <br><br>
-                                                      <button class="btn yelBtn" type="submit">Update Details</button>
-                                                </form>
-                                          </div>
-                                    </div>
-                              </div>
-                        </div>
+                                                        <label class="ms">Must Try
+                                                        <input type="checkbox" class="customCheckbox mFont" value="Must Try" name="tags">
+                                                        </label>
 
-                  </div>
-            </div>
+                                                        <br><br>
+                                                        <button class="btn yelBtn" type="submit">Update Details</button>
+                                                    </form>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+
+                    </div>
+                </div>
             </li>
             
       <%}%>

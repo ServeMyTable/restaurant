@@ -141,13 +141,15 @@ app.post('/Register',function(req,res){
 
                         newUser.save(function(err,result){
                               if(err){
-                                    res.render("register.ejs",{Message : {msg : "Error occured Please try again!!!" , status : 0}});
+                                    console.log(err);
+                                    res.render("register.ejs",{Message : {msg : "Error occured Please try again!!!", status : 0}});
                               }else{
                                     passport.authenticate('local')(req,res,function(){
                                           res.render("index.ejs",{Message : {msg : 2 , status : 2}});
                                     });
                               }
                         })
+
                   }else{
                         res.render('Error.ejs',{error : "Error in securing password"});
                   }
@@ -565,6 +567,7 @@ app.post('/Dish',function(req,res){
             {$push:{'Dishes' : Dish,'Categories' : Dish.Category}},
             function(err){
                   if(err){
+                        console.log(err);
                         res.render('Error.ejs',{error : "Error in Updating Dish"});
                   }else{
                         User.findById(req.user._id,function(err,doc){
@@ -583,14 +586,23 @@ app.post('/Dish',function(req,res){
 });
 
 app.post('/DeleteDish',function(req,res){
+      
+      var Categories = req.user.Categories;
+      var DeleteCategory = req.body.DeleteCategory;
+      var index = Categories.indexOf(DeleteCategory);
+      Categories.splice(index,1);
 
       User.findByIdAndUpdate(req.user._id,{
             $pull : {
-                  Dishes : {_id : req.body.DishID}
+                  Dishes : {_id : req.body.DishID},
+            },
+            $set : {
+                  Categories : Categories
             }
       },
       function(error){
             if(error){
+                  console.log(error);
                   res.render('Error.ejs',{error : "Error in Deleting Dish"});
             }else{
 
@@ -618,48 +630,70 @@ app.post('/UpdateDish',function(req,res){
             tags : req.body.tags,
             Category : req.body.Category
       };
+      User.updateMany({'Dishes._id' : req.body.DishID},
+      {$set:{
+            'Dishes.$.DishName' : Dish.DishName,
+            'Dishes.$.Description' : Dish.Description,
+            'Dishes.$.Price':Dish.Price,
+            'Dishes.$.tags':Dish.tags,
+            'Dishes.$.Category':Dish.Category
+      }},function(error){
+            if(error){
+                  console.log(error);
+                  res.render('Error.ejs',{error : "Error in Updating Dish"});
+            }else{
+                  User.updateOne({_id : req.user._id},{$push : {'Categories':Dish.Category}},
+                  function(err){
+                        if(err){
+                              console.log(err);
+                              res.render('Error.ejs',{error : "Error in Updating Dish"});
+                        }else{
 
-      User.updateMany({_id : req.user._id},
-            {$push:{'Dishes' : Dish,'Categories' : Dish.Category}},
-            function(err){
-                  if(err){
-                        res.render('Error.ejs',{error : "Error in Updating Dish"});
+                              User.findById(req.user._id,function(err,doc){
+                                    req.logIn(doc,function(err1){
+      
+                                          if(err1){ res.render('Error.ejs',{error : "Some Error in Occured."}); }
+                                          else{
+                                                res.redirect("/Dishes");
+      
+                                          }
+                                    });
+                              });
+                        }
+                  });
+            }
+      });
+      
+
+});
+
+app.post('/Availibility',function(req,res){
+      var changeStatus = req.body.Status;
+      if(req.body.Status == "true"){
+            changeStatus = "false";
+      }else{
+            changeStatus = "true";
+      }
+      User.updateMany({'Dishes._id' : req.body.Dish_ID},
+            {$set:{'Dishes.$.Available' : changeStatus}},
+            function(error){
+                  if(error){
+                        console.log(error);
+                        res.render('Error.ejs',{error : "Error in Changing Dish State"});
                   }else{
                         User.findById(req.user._id,function(err,doc){
                               req.logIn(doc,function(err1){
 
                                     if(err1){ res.render('Error.ejs',{error : "Some Error in Occured."}); }
                                     else{
+                                          res.redirect("/Dishes");
 
-                                          User.findByIdAndUpdate(req.user._id,{
-                                                $pull : {
-                                                      Dishes : {_id : DishID}
-                                                }
-                                          },
-                                          function(error){
-                                                if(error){
-                                                      res.render('Error.ejs',{error : "Error in Updating Details"});
-                                                }else{
-
-                                                      User.findById(req.user._id,function(err,doc){
-                                                            req.logIn(doc,function(err1){
-
-                                                                  if(err1){ res.render('Error.ejs',{error : "Some Error Occured."}); }
-                                                                  else{
-                                                                        res.redirect("/Dishes");
-                                                                  }
-
-                                                            });
-                                                      });
-                                                }
-                                          });
                                     }
-
                               });
                         });
                   }
+                  
             });
-
 });
 
 //=============================================================================================================
@@ -775,6 +809,89 @@ app.post('/PlaceOrder',function(req,res){
             }
       });
 
+});
+
+//=============================================================================================================
+//Help ?
+app.get('/Help',function(req,res){
+      if(req.isAuthenticated()){
+            res.render('Help.ejs',{ user:req.user,Message : {status:2,msg:2} });
+      }else{
+            res.render('index.ejs',{Message : {status:2,msg:2}});
+      }
+});
+
+app.post('/helpForm',function(req,res){
+        const Name = req.user.username;
+        const Email = req.user.email;
+        const Message = req.body.Message;
+
+        var transporter = nodemailer.createTransport({
+    
+                service: 'gmail',
+                auth: {
+                  user: process.env.EMAIL,
+                  pass: process.env.PASSWORD
+                }
+        });
+        var HTML = 
+                  `<!doctype html>
+                  <html>
+                        <head>
+                        <meta charset="utf-8">
+                        <style>
+                              h1{
+                                    font-family : 'PTSans',sans-serif
+                              }
+                              .mFont{
+                                    font-family: "Noto Sans",sans-serif;
+                              }
+                              .line-theme{
+
+                                    border: 1px solid #ffd31d;
+                                    width: 100%;
+                                    background-color: #ffd31d;
+                              }
+                              body{
+                                    padding : 10px;
+                              }
+                              
+                        </style>
+                        <script async src="https://cdn.ampproject.org/v0.js"></script>
+                        </head>
+                        <body>
+                              <h1>Serve My Table</h1>
+                              <hr class="line-theme"><br>
+                              <h2 class="mFont">Message</h2>
+                              <hr class="line-theme">
+                              <p class="mFont">${Message}</p>
+                              
+                              <hr class="line-theme"><br>
+                              <p class="mFont">
+                              Name : ${Name}<br>
+                              Contact Mail : ${Email}</p>	
+                        </body>
+                  </html>`
+                  
+        
+        var mailOptions = {
+                from: 'servemytable@gmail.com',
+                to: 'servemytable@gmail.com',
+                subject: 'Enquiry',
+                html: HTML
+        };
+              
+        transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                       //console.log(error);
+                       res.render('Help.ejs',{user:req.user,Message : {msg : "Unable to send Message Try Again later" , status : 0}});
+                        
+                } else {
+                        
+                        //console.log("Success");
+                        res.render('Help.ejs',{user:req.user,Message : {msg : "Thank You for contacting Us!!!" , status : 1}});
+                }
+        });
 });
 
 //=============================================================================================================
