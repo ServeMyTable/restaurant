@@ -5,7 +5,6 @@
       --facebook : #3B5998;
       --dark-red : #d63447;
       --theme-orange : #f57b51;
-      --theme-green : #28A745;
 }
 
 .logoFont {
@@ -33,19 +32,25 @@ input:focus{
 }
 
 .yelBtn:hover{
-      
+
       background-color: #ffd21dc2;
 }
 
-.themeRedBtn{
-      background-color: var(--dark-red);
+.yel-outline{
+      background-color: white;
+      border: 1px solid var(--theme-color);
+      border-radius: 2px;
+      color: black;
+}
+.yel-outline:hover{
+      background-color: var(--theme-color);
 }
 
-.themeRedBtn:hover{
-      background-color: #d63447af;
+
+
+.ml-10{
+      margin-left: 10px;
 }
-
-
 .mt-10{
       margin-top: 10px;
 }
@@ -60,96 +65,4 @@ input:focus{
 }
 .mb-0{
       margin-bottom: 0;
-}
-
-.line-theme{
-
-      border: 1px solid var(--theme-color);
-      width: 100%;
-      background-color: var(--theme-color);
-}
-.totalBox{
-      background-color: var(--theme-color);
-      color: black;
-      font-weight: 700;
-      padding: 10px;
-}
-
-.website{
-      font-size: smaller;
-      color: var(--theme-grey);
-}
-
-.Timestamp{
-      font-size: smaller;
-      color: black;
-}
-.yel-outline{
-      background-color: white;
-      border: 1px solid var(--theme-color);
-      border-radius: 2px;
-      color: black;
-}
-.yel-outline:hover{
-      background-color: var(--theme-color);
-}
-
-.searchBar{
-
-      padding: 10px;
-      padding-left: 50px;
-      border: 1px solid var(--theme-grey);
-      border-radius: 50px;
-      margin-top: 30px;
-      width: 30em;
-      background-image: url('../assets/search.svg');
-      background-repeat: no-repeat;
-      background-position: 5px 4px;
-
-}
-
-#snackbar {
-      visibility: hidden; 
-      min-width: 250px; 
-      margin-left: -125px;
-      background-color: var(--theme-green); 
-      color: #fff; 
-      text-align: center; 
-      border-radius: 2px; 
-      padding: 16px; 
-      position: fixed;
-      z-index: 1; 
-      left: 50%; 
-      bottom: 30px;
-}
- 
-#snackbar.show {
-  visibility: visible; 
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
-
-@-webkit-keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
-}
-
-@keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
-}
-
-@-webkit-keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
-}
-
-@keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
-}
-
-.fs-b{
-      font-weight: bold;
 }

@@ -1,0 +1,60 @@
+.totalBox{
+        background-color: var(--theme-color);
+        color: black;
+        padding: 10px;
+        margin: 0;
+}
+
+.line-theme{
+
+        border: 1px solid var(--theme-color);
+        background-color: var(--theme-color);
+}
+
+.tick{
+        margin-left: 20px;
+        display: inline-block;
+}
+
+.inBlock{
+        display: inline-block;
+}
+.verticalCenter{
+        vertical-align: center;
+}
+img{
+        vertical-align: inherit;
+}
+.rd{
+        padding: 10px;
+        color: black;
+        background-color: var(--theme-color);
+        margin-top: 30px;
+}
+.mb-30{
+        margin-bottom: 30px;
+}
+table{
+        margin: 0;
+}
+.fs-sm{
+        font-size: small;
+}
+
+.pd-10{ padding: 10px;}
+.footerNew{
+        color: var(--theme-color);
+        margin-bottom: 10px;
+}
+.footerNew:hover{
+        color: black;
+        text-decoration: none;
+}
+
+td,th{
+    font-family: "Noto Sans",sans-serif;
+}
+
+.logoImage{
+    vertical-align: middle;
+}

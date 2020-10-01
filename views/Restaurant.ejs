@@ -1,0 +1,87 @@
+<%-include('./partials/header.ejs')%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="./css/Restaurant.css"/>
+
+</head>
+<body>
+
+      <nav class="navbar shadow">
+            <div class="container">
+                  <a class="navbar-brand logoFont brand-name"><img src="./assets/logo.png" width="40"> Serve My Table</a>
+                  <div class="navbar-nav ml-auto">
+                      <button class="yelBtn btn" onclick="getOrders()">Place Order</button>
+                  </div>
+            </div>
+      </nav>
+
+      <div class="container">
+
+            <div class="row">
+                  <div class="col-4">
+                        <img class="mt-30"
+                        src="<%=Restaurant.full.ImageUrl%>"
+                        alt="Restaurant Image or Logo"
+                        width="150" height="150">
+                  </div>
+                  <div class="col-8">
+                        <h2 class="mFont mt-30"><%=Restaurant.name%></h2>
+                        <h6 class="mFont mt-10 Restlocation"><%=Restaurant.location%></h6>
+                  </div>
+            </div>
+            <h5 class="mFont mt-10">Hello <%=CustomerName%>!</h5>
+            <%const UniqueCategories = Restaurant.full.Categories.filter(function(item, pos){return Restaurant.full.Categories.indexOf(item)== pos;});%>
+
+            <input type="text" id="DishToSearch" onkeyup="filterItems()" placeholder="Search in Menu" class="mFont searchBar"/>
+            <ul id="ListOfDishes">
+		        <p style="display: none;" id="disheslen"><%=Restaurant.dishes.length%></p>
+            <%for(var i = 0 ; i < UniqueCategories.length ; i++){%>
+                  <li>
+                        <%const Category = UniqueCategories[i]%>
+                        <h3 class="mFont mt-30"><%=Category%></h3>
+                        <hr class="categorical-line">
+                        <%for(var j = 0 ; j < Restaurant.dishes.length ; j++){%>
+                              <%if(Restaurant.dishes[j].Category == Category){%>
+                                    <div class="row mt-30">
+
+                                          <div class="col-8">
+                                                <h5 class="mFont mb-0" id="DishName<%=j+1%>"> <%=Restaurant.dishes[j].DishName%>  </h5>
+                                                <p class="mFont">
+
+                                                    <div class="location" > <%=Restaurant.dishes[j].Description%> </div>
+                                                    Rs <a id="DishPrice<%=j+1%>"><%=Restaurant.dishes[j].Price%> </a>
+                                                    <div class="mt-10">
+                                                      <%for(var k = 0 ; k < Restaurant.dishes[j].tags.length ; k++){%>
+                                                            <span class="mFont tags"><%=Restaurant.dishes[j].tags[k]%></span>
+                                                      <%}%>
+                                                    </div>
+                                                </p>
+                                          </div>
+                                          <div class="col-4">
+                                                <%if(Restaurant.dishes[j].Available == true){%>
+                                                    <button class="CounterMinus" onclick="decrement('<%=j+1%>')">-</button>
+                                                    &nbsp;<a id="Quantity<%=j+1%>">0</a> &nbsp;
+                                                    <button class="CounterPlus" onclick="increment( '<%=j+1%>' )">+</button>
+                                                <%}else{%>
+                                                      <label class="mFont tags">UnAvailable</label>
+                                                <%}%>
+                                          </div>
+                                    </div>
+                              <%}%>
+                        <%}%>
+                  </li>
+
+            <%}%>
+            </ul>
+      </div>
+
+      <form action="/Cart" method="POST" style="display: none;" id="CartForm">
+            <input name="TableNo" value='<%=Table%>' >
+            <input name="Id" value="<%=Restaurant.full.Phone%>" >
+            <input name="CustomerName" value="<%=CustomerName%>">
+            <button type="submit" id="ordersSubmit"></button>
+      </form>
+
+
+      <script src="./scripts/Restaurant.js" type="text/javascript"></script>
+
+<%- include('./partials/footer.ejs') %>
